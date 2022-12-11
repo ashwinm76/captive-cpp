@@ -7,8 +7,24 @@ class Item;
 class Game;
 
 enum class Action {
-  kUnknown, kMoveNorth, kMoveSouth, kMoveEast, kMoveWest, kQuit, kGet, kDrop,
-  kThrow, kCut, kWear, kLight, kKick, kRing, kRead, kLook, kKill, kSay,
+  kUnknown,
+  kMoveNorth,
+  kMoveSouth,
+  kMoveEast,
+  kMoveWest,
+  kQuit,
+  kGet,
+  kDrop,
+  kThrow,
+  kCut,
+  kWear,
+  kLight,
+  kKick,
+  kRing,
+  kRead,
+  kLook,
+  kKill,
+  kSay,
   kTransmit
 };
 
@@ -16,9 +32,9 @@ enum class Action {
    the Game state. */
 class ActionHandler {
  public:
-  ActionHandler(Action action, Game* game, 
-                std::function<void(Game*, const Item*)> handler) 
-      : action_(action), game_(game), handler_(handler) { }
+  ActionHandler(Action action, Game* game,
+                std::function<void(Game*, const Item*)> handler)
+      : action_(action), game_(game), handler_(handler) {}
 
   void operator()(const Item* item) const { handler_(game_, item); }
 

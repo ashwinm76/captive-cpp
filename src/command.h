@@ -2,13 +2,14 @@
 #define CAPTIVE_SRC_COMMAND_H_
 
 #include <string>
+
 #include "action.h"
 
 class Command {
  public:
-  Command() : action_(Action::kUnknown), object_("") { }
+  Command() : action_(Action::kUnknown), object_("") {}
 
-  void Parse(const std::string &str) {
+  void Parse(const std::string& str) {
     int sep = str.find_first_of(' ');
     std::string s = str.substr(0, sep);
     if (s[0] == 'n') {
@@ -27,30 +28,30 @@ class Command {
       action_ = Action::kDrop;
     } else if (s == "throw") {
       action_ = Action::kThrow;
-    }  else if (s == "cut") {
+    } else if (s == "cut") {
       action_ = Action::kCut;
-    }  else if (s == "wear") {
+    } else if (s == "wear") {
       action_ = Action::kWear;
-    }  else if (s == "light") {
+    } else if (s == "light") {
       action_ = Action::kLight;
-    }  else if (s == "kick") {
+    } else if (s == "kick") {
       action_ = Action::kKick;
-    }  else if (s == "ring") {
+    } else if (s == "ring") {
       action_ = Action::kRing;
-    }  else if (s == "read") {
+    } else if (s == "read") {
       action_ = Action::kRead;
-    }  else if (s == "look") {
+    } else if (s == "look") {
       action_ = Action::kLook;
-    }  else if (s == "kill") {
+    } else if (s == "kill") {
       action_ = Action::kKill;
-    }  else if (s == "say") {
+    } else if (s == "say") {
       action_ = Action::kSay;
-    }  else if (s == "transmit") {
+    } else if (s == "transmit") {
       action_ = Action::kTransmit;
     } else {
       action_ = Action::kUnknown;
     }
-    object_ = (sep == std::string::npos) ? "" : str.substr(sep+1);
+    object_ = (sep == std::string::npos) ? "" : str.substr(sep + 1);
   }
 
   Action action() const { return action_; }
