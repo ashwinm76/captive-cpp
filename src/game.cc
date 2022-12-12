@@ -7,7 +7,7 @@
 #include "action.h"
 #include "command.h"
 
-Game::Game() : inventory_("Inventory") {
+Game::Game() : inventory_("Inventory"), nowhere_("Nowhere") {
   // Create rooms
   /* Map:
         21
@@ -25,27 +25,27 @@ Game::Game() : inventory_("Inventory") {
         1
   */
   rooms_ = {
-      Room("Prison cell", {2, 0, 0, 0}),
-      Room("Bell tower", {0, 1, 0, 3}),
-      Room("Winding staircase", {4, 0, 2, 0}),
-      Room("Gunpowder chamber", {0, 3, 5, 6}),
-      Room("Place with a rocky floor", {7, 0, 0, 4}),
-      Room("Wall with scratches on it", {0, 0, 4, 0}),
-      Room("Signal transmitter room", {0, 5, 8, 9}),
-      Room("Room of chains", {10, 11, 0, 7}),
-      Room("Padded cell", {0, 0, 7, 0}),
-      Room("Area with a hole in the ceiling", {12, 8, 13, 14}),
-      Room("Muddy area", {8, 15, 16, 0}),
-      Room("Altar", {0, 10, 0, 0}),
-      Room("Place beside a monolith", {0, 0, 0, 10}),
-      Room("Dimly lit passage", {0, 0, 10, 17}),
-      Room("Locksmiths", {11, 0, 0, 0}),
-      Room("Frozen room", {0, 0, 0, 11}),
-      Room("Brightly coloured room", {18, 0, 14, 19}),
-      Room("Observation point", {0, 17, 20, 0}),
-      Room("Repairs room", {0, 0, 17, 0}),
-      Room("Air lock", {21, 0, 0, 18}),
-      Room("Outside of ship", {0, 20, 0, 0}),
+      new Room("Prison cell", {2, 0, 0, 0}),
+      new Room("Bell tower", {0, 1, 0, 3}),
+      new Room("Winding staircase", {4, 0, 2, 0}),
+      new Room("Gunpowder chamber", {0, 3, 5, 6}),
+      new Room("Place with a rocky floor", {7, 0, 0, 4}),
+      new Room("Wall with scratches on it", {0, 0, 4, 0}),
+      new Room("Signal transmitter room", {0, 5, 8, 9}),
+      new Room("Room of chains", {10, 11, 0, 7}),
+      new Room("Padded cell", {0, 0, 7, 0}),
+      new Room("Area with a hole in the ceiling", {12, 8, 13, 14}),
+      new Room("Muddy area", {8, 15, 16, 0}),
+      new Room("Altar", {0, 10, 0, 0}),
+      new Room("Place beside a monolith", {0, 0, 0, 10}),
+      new Room("Dimly lit passage", {0, 0, 10, 17}),
+      new Room("Locksmiths", {11, 0, 0, 0}),
+      new Room("Frozen room", {0, 0, 0, 11}),
+      new Room("Brightly coloured room", {18, 0, 14, 19}),
+      new Room("Observation point", {0, 17, 20, 0}),
+      new Room("Repairs room", {0, 0, 17, 0}),
+      new Room("Air lock", {21, 0, 0, 18}),
+      new Room("Outside of ship", {0, 20, 0, 0}),
   };
 
   // Create action handlers
@@ -53,10 +53,10 @@ Game::Game() : inventory_("Inventory") {
       new ActionHandler(Action::kGet, this, [](Game* game, const Item* item) {
         if (game->inventory_.HasItem(item)) {
           std::cout << "You already have " << item->name() << "." << std::endl;
-        } else if (!game->CurrentRoom().HasItem(item)) {
+        } else if (!game->CurrentRoom()->HasItem(item)) {
           std::cout << "I don't see " << item->name() << " here." << std::endl;
         } else {
-          game->CurrentRoom().RemoveItem(item);
+          game->CurrentRoom()->RemoveItem(item);
           game->inventory_.PutItem(item);
           std::cout << "OK" << std::endl;
         }
@@ -67,48 +67,83 @@ Game::Game() : inventory_("Inventory") {
         if (!game->inventory_.HasItem(item)) {
           std::cout << "You don't have " << item->name() << "." << std::endl;
         } else {
-          game->CurrentRoom().PutItem(item);
+          game->CurrentRoom()->PutItem(item);
           game->inventory_.RemoveItem(item);
           std::cout << "OK" << std::endl;
         }
       });
 
   // Create items
-  items_ = {
-      Item("grenade", 4, {get_handler, drop_handler}),
-      Item("rough metal", 8, {get_handler, drop_handler}),
-      Item("shiny key", static_cast<int>(Location::kNowhere),
-           {get_handler, drop_handler}),
-      Item("ice block", 16, {get_handler, drop_handler}),
-      Item("gloves", 5, {get_handler, drop_handler}),
-      Item("sabre", 12, {get_handler, drop_handler}),
-      Item("aerial", static_cast<int>(Location::kNowhere),
-           {get_handler, drop_handler}),
-      Item("torch", 3, {get_handler, drop_handler}),
-      Item("headphones", 9, {get_handler, drop_handler}),
-      Item("magnifier", 17, {get_handler, drop_handler}),
-      Item("locked door", 20, {}),
-      Item("door", 1, {}),
-      Item("bell", 2, {}),
-      Item("scratches", 6, {}),
-      Item("key cutter", 15, {}),
-      Item("hole", 10, {}),
-      Item("transmitter", 7, {}),
-      Item("window", 18, {}),
-      Item("mud man", 11, {}),
-      Item("wire", 19, {}),
-      Item("inscription", 13, {}),
-      Item("boulders", static_cast<int>(Location::kNowhere), {}),
-      Item("swarck", static_cast<int>(Location::kNowhere), {}),
-  };
-
-  // Add items to rooms
-  for_each(items_.begin(), items_.end(), [this](const Item& item) {
-    int loc = item.location();
-    if (loc > 0 && loc <= this->rooms_.size()) {
-      this->rooms_[loc - 1].PutItem(&item);
-    }
-  });
+  Item* item;
+  // Grenade
+  item = new Item("grenade", {get_handler, drop_handler});
+  GetRoom("Gunpowder chamber")->PutItem(item);
+  // Rough metal
+  item = new Item("rough metal", {get_handler, drop_handler});
+  GetRoom("Room of chains")->PutItem(item);
+  // Shiny key
+  item = new Item("shiny key", {get_handler, drop_handler});
+  nowhere_.PutItem(item);
+  // Ice block
+  item = new Item("ice block", {get_handler, drop_handler});
+  GetRoom("Frozen room")->PutItem(item);
+  // Gloves
+  item = new Item("gloves", {get_handler, drop_handler});
+  GetRoom("Place with a rocky floor")->PutItem(item);
+  // sabre
+  item = new Item("sabre", {get_handler, drop_handler});
+  GetRoom("Altar")->PutItem(item);
+  // aerial
+  item = new Item("aerial", {get_handler, drop_handler});
+  nowhere_.PutItem(item);
+  // Torch
+  item = new Item("torch", {get_handler, drop_handler});
+  GetRoom("Winding staircase")->PutItem(item);
+  // Headphones
+  item = new Item("headphones", {get_handler, drop_handler});
+  GetRoom("Padded cell")->PutItem(item);
+  // Magnifier
+  item = new Item("magnifier", {get_handler, drop_handler});
+  GetRoom("Brightly coloured room")->PutItem(item);
+  // Locked door
+  item = new Item("locked door", {});
+  GetRoom("Air lock")->PutItem(item);
+  // Door
+  item = new Item("door", {});
+  GetRoom("Prison cell")->PutItem(item);
+  // Bell
+  item = new Item("bell", {});
+  GetRoom("Bell tower")->PutItem(item);
+  // Scratches
+  item = new Item("scratches", {});
+  GetRoom("Wall with scratches on it")->PutItem(item);
+  // Key cutter
+  item = new Item("key cutter", {});
+  GetRoom("Locksmiths")->PutItem(item);
+  // Hole
+  item = new Item("hole", {});
+  GetRoom("Area with a hole in the ceiling")->PutItem(item);
+  // Transmitter
+  item = new Item("transmitter", {});
+  GetRoom("Signal transmitter room")->PutItem(item);
+  // Window
+  item = new Item("window", {});
+  GetRoom("Observation point")->PutItem(item);
+  // Mud man
+  item = new Item("mud man", {});
+  GetRoom("Muddy area")->PutItem(item);
+  // Wire
+  item = new Item("wire", {});
+  GetRoom("Repairs room")->PutItem(item);
+  // Inscription
+  item = new Item("inscription", {});
+  GetRoom("Place beside a monolith")->PutItem(item);
+  // Boulders
+  item = new Item("boulders", {});
+  nowhere_.PutItem(item);
+  // Swarck
+  item = new Item("swarck", {});
+  nowhere_.PutItem(item);
 }
 
 void Game::Run() {
@@ -130,7 +165,7 @@ void Game::Run() {
 
   while (running) {
     std::string input;
-    Room* current_room = &CurrentRoom();
+    Room* current_room = CurrentRoom();
 
     std::cout << "----------------------------------------" << std::endl;
     std::cout << current_room->name() << std::endl << "Exits:- ";
@@ -165,7 +200,7 @@ void Game::Run() {
         break;
       default: {
         std::string obj = cmd_.object();
-        const Item* item = FindItem(obj);
+        const Item* item = GetItem(obj);
         if (item == nullptr) {
           std::cout << "I don't see " << obj << " anywhere." << std::endl;
         } else {
@@ -195,9 +230,17 @@ Direction Game::MakeDirection(const Command cmd) const {
   }
 }
 
-const Item* Game::FindItem(const std::string name) const {
-  auto i = std::find_if(items_.begin(), items_.end(), [name](const Item& item) {
-    return (item.name() == name);
-  });
-  return ((i == items_.end()) ? nullptr : &(*i));
+const Item* Game::GetItem(const std::string& name) const {
+  const Item* i = rooms_[room_ - 1]->GetItem(name);
+  if (i == nullptr) {
+    i = inventory_.GetItem(name);
+  }
+  return i;
+}
+
+Room* Game::GetRoom(const std::string& name) {
+  auto r =
+      std::find_if(rooms_.begin(), rooms_.end(),
+                   [&name](const Room* room) { return room->name() == name; });
+  return (r == rooms_.end()) ? nullptr : *r;
 }

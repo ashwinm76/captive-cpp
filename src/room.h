@@ -35,6 +35,13 @@ class Room {
                        [item](const Item* i) { return (i == item); });
   }
 
+  const Item* GetItem(const std::string& name) const {
+    auto i = std::find_if(
+        items_.begin(), items_.end(),
+        [&name](const Item* item) { return item->name() == name; });
+    return (i == items_.end()) ? nullptr : *i;
+  }
+
   std::vector<const Item*> items() const { return items_; }
 
  private:

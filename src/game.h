@@ -19,14 +19,15 @@ class Game {
   enum class Location { kNowhere = -1, kInventory = 0 };
 
   Direction MakeDirection(const Command cmd) const;
-  const Item* FindItem(const std::string item) const;
-  Room& CurrentRoom() { return rooms_[room_ - 1]; }
+  const Item* GetItem(const std::string& name) const;
+  Room* GetRoom(const std::string& name);
+  Room* CurrentRoom() { return rooms_[room_ - 1]; }
 
   int room_;
   Command cmd_;
-  std::vector<Room> rooms_;
-  std::vector<Item> items_;
+  std::vector<Room*> rooms_;
   Room inventory_;
+  Room nowhere_;
   ActionHandler* get_handler;
   ActionHandler* drop_handler;
 };
