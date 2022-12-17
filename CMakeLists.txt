@@ -12,4 +12,5 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
   src/main.cc
   src/game.cc
   src/common.cc
+  src/captive.cc
 )

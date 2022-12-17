@@ -21,13 +21,26 @@ class Room {
   }
 
   bool HasExit(Direction dir) const {
-    return connections_[static_cast<int>(dir)] != 0;
+    return connections_[static_cast<int>(dir)] > 0;
   }
 
-  void PutItem(const Item* item) { items_.push_back(item); }
+  void EnableExit(Direction dir) {
+    if (connections_[static_cast<int>(dir)] < 0) {
+      connections_[static_cast<int>(dir)] *= -1;
+    }
+  }
+
+  void PutItem(Item* item) { items_.push_back(item); }
 
   void RemoveItem(const Item* item) {
     items_.erase(std::find(items_.begin(), items_.end(), item));
+  }
+
+  void RemoveItem(const std::string& name) {
+    Item* item = GetItem(name);
+    if (item != nullptr) {
+      RemoveItem(item);
+    }
   }
 
   bool HasItem(const Item* item) const {
@@ -35,19 +48,23 @@ class Room {
                        [item](const Item* i) { return (i == item); });
   }
 
-  const Item* GetItem(const std::string& name) const {
+  bool HasItem(const std::string& name) const {
+    return (GetItem(name) != nullptr);
+  }
+
+  Item* GetItem(const std::string& name) const {
     auto i = std::find_if(
         items_.begin(), items_.end(),
         [&name](const Item* item) { return item->name() == name; });
     return (i == items_.end()) ? nullptr : *i;
   }
 
-  std::vector<const Item*> items() const { return items_; }
+  std::vector<Item*> items() const { return items_; }
 
  private:
   std::string name_;
   std::array<int, 4> connections_;
-  std::vector<const Item*> items_;
+  std::vector<Item*> items_;
 };
 
 #endif

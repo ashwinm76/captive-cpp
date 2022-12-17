@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
-#include "game.h"
+#include "captive.h"
 
 int main(int argc, char **argv) {
-  Game game;
+  Captive captive;
 
-  game.Run();
+  captive.Run();
   return 0;
 }

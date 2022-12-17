@@ -25,7 +25,8 @@ enum class Action {
   kLook,
   kKill,
   kSay,
-  kTransmit
+  kTransmit,
+  kOpen
 };
 
 /* The action handler acts on an Item (without modifying it) and can change
@@ -33,17 +34,17 @@ enum class Action {
 class ActionHandler {
  public:
   ActionHandler(Action action, Game* game,
-                std::function<void(Game*, const Item*)> handler)
+                std::function<void(Game*, Item*)> handler)
       : action_(action), game_(game), handler_(handler) {}
 
-  void operator()(const Item* item) const { handler_(game_, item); }
+  void operator()(Item* item) const { handler_(game_, item); }
 
   Action action() const { return action_; }
 
  private:
   Action action_;
   Game* game_;
-  std::function<void(Game*, const Item*)> handler_;
+  std::function<void(Game*, Item*)> handler_;
 };
 
 #endif

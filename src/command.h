@@ -12,15 +12,7 @@ class Command {
   void Parse(const std::string& str) {
     int sep = str.find_first_of(' ');
     std::string s = str.substr(0, sep);
-    if (s[0] == 'n') {
-      action_ = Action::kMoveNorth;
-    } else if (s[0] == 's') {
-      action_ = Action::kMoveSouth;
-    } else if (s[0] == 'e') {
-      action_ = Action::kMoveEast;
-    } else if (s[0] == 'w') {
-      action_ = Action::kMoveWest;
-    } else if (s == "quit") {
+    if (s == "quit") {
       action_ = Action::kQuit;
     } else if (s == "get") {
       action_ = Action::kGet;
@@ -48,6 +40,16 @@ class Command {
       action_ = Action::kSay;
     } else if (s == "transmit") {
       action_ = Action::kTransmit;
+    } else if (s == "open") {
+      action_ = Action::kOpen;
+    } else if (s[0] == 'n') {
+      action_ = Action::kMoveNorth;
+    } else if (s[0] == 's') {
+      action_ = Action::kMoveSouth;
+    } else if (s[0] == 'e') {
+      action_ = Action::kMoveEast;
+    } else if (s[0] == 'w') {
+      action_ = Action::kMoveWest;
     } else {
       action_ = Action::kUnknown;
     }
