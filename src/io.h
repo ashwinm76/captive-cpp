@@ -17,15 +17,21 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include <vector>
+#ifndef CAPTIVE_SRC_IO_H
+#define CAPTIVE_SRC_IO_H
 
-#include "captive.h"
-#include "iostd.h"
+#include <list>
+#include <string>
 
-int main(int argc, char **argv) {
-  Iostd io;
-  Captive captive(&io);
+#include "game.h"
 
-  captive.Run();
-  return 0;
-}
+class Io {
+ public:
+  virtual void WriteInstructions(const std::string& s) = 0;
+  virtual void WriteRoomInfo(Game& game) = 0;
+  virtual void WriteResponse(const std::string& s) = 0;
+  virtual void WriteResponse(const std::list<const std::string>& m) = 0;
+  virtual std::string ReadCommand(const std::string& prompt) = 0;
+};
+
+#endif

@@ -21,10 +21,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define CAPTIVE_SRC_CAPTIVE_H
 
 #include "game.h"
+#include "io.h"
 
 class Captive : public Game {
  public:
-  Captive();
+  Captive(Io* io);
 
  protected:
   void CreateRooms();

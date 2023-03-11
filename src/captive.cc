@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "captive.h"
 
-Captive::Captive() {
+Captive::Captive(Io* io) : Game(io) {
   transmitter_overheating_ = true;
   air_lock_open_ = false;
   air_lock_door_open_ = false;
@@ -80,19 +80,19 @@ void Captive::CreateActions() {
   handlers()["get_handler"] =
       new ActionHandler(Action::kGet, this, [](Game* game, Item* item) {
         if (game->inventory().HasItem(item)) {
-          std::cout << "You already have " << item->name() << "." << std::endl;
+          game->io()->WriteResponse({"You already have ", item->name(), "."});
         } else if (!game->CurrentRoom()->HasItem(item)) {
-          std::cout << "I don't see " << item->name() << " here." << std::endl;
+          game->io()->WriteResponse({"I don't see ", item->name(), " here."});
         } else {
           Item* gloves;
           if (item->name() == "ice block" &&
               (!(gloves = game->inventory().GetItem("gloves")) ||
                !gloves->HasState(ItemState::kWorn))) {
-            std::cout << "It is too cold to carry." << std::endl;
+            game->io()->WriteResponse("It is too cold to carry.");
           } else {
             game->CurrentRoom()->RemoveItem(item);
             game->inventory().PutItem(item);
-            std::cout << "OK." << std::endl;
+            game->io()->WriteResponse("OK.");
           }
         }
       });
@@ -100,7 +100,7 @@ void Captive::CreateActions() {
   handlers()["drop_handler"] =
       new ActionHandler(Action::kDrop, this, [](Game* game, Item* item) {
         if (!game->inventory().HasItem(item)) {
-          std::cout << "You don't have " << item->name() << "." << std::endl;
+          game->io()->WriteResponse({"You don't have ", item->name(), "."});
         } else {
           std::string name = item->name();
           Room* room = game->CurrentRoom();
@@ -113,18 +113,18 @@ void Captive::CreateActions() {
             game->nowhere().RemoveItem(i);
             rr->PutItem(i);
             captive->transmitter_overheating_ = false;
-            std::cout << "The transmitter has cooled down, but it does not "
-                         "have an aerial."
-                      << std::endl;
+            game->io()->WriteResponse(
+                "The transmitter has cooled down, but it"
+                " does not have an aerial.");
           } else if (name == "aerial" &&
                      room->name() == "Signal transmitter room") {
             game->inventory().RemoveItem(item);
             room->PutItem(item);
-            std::cout << "The transmitter is fully operational." << std::endl;
+            game->io()->WriteResponse("The transmitter is fully operational.");
           } else {
             game->CurrentRoom()->PutItem(item);
             game->inventory().RemoveItem(item);
-            std::cout << "OK." << std::endl;
+            game->io()->WriteResponse("OK.");
           }
         }
       });
@@ -134,81 +134,83 @@ void Captive::CreateActions() {
         Item* hp = game->inventory().GetItem("headphones");
         Captive* captive = dynamic_cast<Captive*>(game);
         if (!game->inventory().HasItem(item)) {
-          std::cout << "You don't have " << item->name() << "." << std::endl;
+          game->io()->WriteResponse({"You don't have ", item->name(), "."});
         } else if (item->name() != "grenade" || !captive->air_lock_door_open_) {
-          std::cout << "That would not achieve anything." << std::endl;
+          game->io()->WriteResponse("That would not achieve anything.");
         } else if (game->CurrentRoom()->name() != "Air lock") {
-          std::cout << "That would not achieve anything." << std::endl;
+          game->io()->WriteResponse("That would not achieve anything.");
         } else if (!hp || !hp->HasState(ItemState::kWorn)) {
-          std::cout << "The noise from the explosion has burst your ear drums."
-                    << "The shock of this has killed you." << std::endl;
+          game->io()->WriteResponse(
+              "The noise from the explosion has burst"
+              " your ear drums. The shock of this has killed you.");
           game->Over();
         } else {
           game->CurrentRoom()->EnableExit(Direction::kNorth);
           game->CurrentRoom()->RemoveItem(
               game->CurrentRoom()->GetItem("boulders"));
           game->inventory().RemoveItem(item);
-          std::cout << "You have cleared a passage through the boulders."
-                    << std::endl;
+          game->io()->WriteResponse(
+              "You have cleared a passage through the "
+              "boulders.");
         }
       });
 
   handlers()["cut_handler"] =
       new ActionHandler(Action::kCut, this, [](Game* game, Item* item) {
         if (!game->inventory().HasItem(item)) {
-          std::cout << "You don't have " << item->name() << "." << std::endl;
+          game->io()->WriteResponse({"You don't have ", item->name(), "."});
         } else if (item->name() != "rough metal") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else if (game->CurrentRoom()->name() != "Locksmiths") {
-          std::cout << "I see no place where it can be cut." << std::endl;
+          game->io()->WriteResponse("I see no place where it can be cut.");
         } else {
           game->inventory().RemoveItem(item);
           item = game->nowhere().GetItem("shiny key");
           game->CurrentRoom()->PutItem(item);
           game->nowhere().RemoveItem(item);
-          std::cout << "OK." << std::endl;
+          game->io()->WriteResponse("OK.");
         }
       });
 
   handlers()["wear_handler"] =
       new ActionHandler(Action::kWear, this, [](Game* game, Item* item) {
         if (!game->inventory().HasItem(item)) {
-          std::cout << "You don't have " << item->name() << "." << std::endl;
+          game->io()->WriteResponse({"You don't have ", item->name(), "."});
         } else if (item->name() != "headphones" && item->name() != "gloves") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else {
           item->AddState(ItemState::kWorn);
-          std::cout << "OK." << std::endl;
+          game->io()->WriteResponse("OK.");
         }
       });
 
   handlers()["light_handler"] =
       new ActionHandler(Action::kLight, this, [](Game* game, Item* item) {
         if (!game->inventory().HasItem(item)) {
-          std::cout << "You don't have " << item->name() << "." << std::endl;
+          game->io()->WriteResponse({"You don't have ", item->name(), "."});
         } else if (item->name() != "torch") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else if (item->HasState(ItemState::kLit)) {
-          std::cout << "It is already lit." << std::endl;
+          game->io()->WriteResponse("It is already lit.");
         } else {
           item->AddState(ItemState::kLit);
-          std::cout << "OK." << std::endl;
+          game->io()->WriteResponse("OK.");
         }
       });
 
   handlers()["kick_handler"] =
       new ActionHandler(Action::kKick, this, [](Game* game, Item* item) {
         if (item->name() != "door") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else if (!game->CurrentRoom()->HasItem(item)) {
-          std::cout << "I don't see it here." << std::endl;
+          game->io()->WriteResponse("I don't see it here.");
         } else {
           if (game->CurrentRoom()->name() == "Prison cell") {
             game->CurrentRoom()->EnableExit(Direction::kNorth);
             game->CurrentRoom()->RemoveItem(item);
-            std::cout
-                << "The hinges were weak and the door has collapsed into a "
-                << "pile of dust." << std::endl;
+            game->io()->WriteResponse(
+                "The hinges were weak and the door has collapsed into a "
+                "pile of dust.");
           }
         }
       });
@@ -216,12 +218,13 @@ void Captive::CreateActions() {
   handlers()["ring_handler"] =
       new ActionHandler(Action::kRing, this, [](Game* game, Item* item) {
         if (item->name() != "bell") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else if (!game->CurrentRoom()->HasItem(item)) {
-          std::cout << "I don't see it here." << std::endl;
+          game->io()->WriteResponse("I don't see it here.");
         } else {
-          std::cout << "You have woken the dead who do not like you too much."
-                    << std::endl;
+          game->io()->WriteResponse(
+              "You have woken the dead who do not like "
+              "you too much.");
           game->Over();
         }
       });
@@ -229,19 +232,20 @@ void Captive::CreateActions() {
   handlers()["read_handler"] =
       new ActionHandler(Action::kRead, this, [](Game* game, Item* item) {
         if (item->name() != "scratches" && item->name() != "inscription") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else if (!game->CurrentRoom()->HasItem(item)) {
-          std::cout << "I don't see it here." << std::endl;
+          game->io()->WriteResponse("I don't see it here.");
         } else {
           if (item->name() == "scratches") {
-            std::cout << "A transmitted signal will allow a door from the "
-                      << "'air lock'  to be opened." << std::endl;
+            game->io()->WriteResponse(
+                "A transmitted signal will allow a door"
+                " from the 'air lock'  to be opened.");
           } else {
             item = game->inventory().GetItem("magnifier");
             if (item == nullptr) {
-              std::cout << "The writing is too small to read." << std::endl;
+              game->io()->WriteResponse("The writing is too small to read.");
             } else {
-              std::cout << "The magic word is 'swarck'." << std::endl;
+              game->io()->WriteResponse("The magic word is 'swarck'.");
             }
           }
         }
@@ -250,17 +254,19 @@ void Captive::CreateActions() {
   handlers()["look_handler"] =
       new ActionHandler(Action::kLook, this, [](Game* game, Item* item) {
         if (item->name() != "hole" && item->name() != "window") {
-          std::cout << "That would not achieve anything." << std::endl;
+          game->io()->WriteResponse("That would not achieve anything.");
         } else if (!game->CurrentRoom()->HasItem(item)) {
-          std::cout << "I don't see it here." << std::endl;
+          game->io()->WriteResponse("I don't see it here.");
         } else {
           if (item->name() == "hole") {
-            std::cout << "Something large has fallen through the hole and "
-                      << "flattened you." << std::endl;
+            game->io()->WriteResponse(
+                "Something large has fallen through the"
+                " hole and flattened you.");
             game->Over();
           } else {
-            std::cout << "A space ship can be seen outside.It is ready to "
-                      << "take off." << std::endl;
+            game->io()->WriteResponse(
+                "A space ship can be seen outside.It is"
+                " ready to take off.");
           }
         }
       });
@@ -268,11 +274,11 @@ void Captive::CreateActions() {
   handlers()["kill_handler"] =
       new ActionHandler(Action::kKill, this, [](Game* game, Item* item) {
         if (item->name() != "mud man") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else if (!game->CurrentRoom()->HasItem(item)) {
-          std::cout << "I don't see it here." << std::endl;
+          game->io()->WriteResponse("I don't see it here.");
         } else {
-          std::cout << "You have killed the mud-man." << std::endl;
+          game->io()->WriteResponse("You have killed the mud-man.");
           game->CurrentRoom()->RemoveItem(item);
         }
       });
@@ -280,12 +286,13 @@ void Captive::CreateActions() {
   handlers()["say_handler"] =
       new ActionHandler(Action::kSay, this, [](Game* game, Item* item) {
         if (item->name() != "swarck") {
-          std::cout << "That would not achieve anything." << std::endl;
+          game->io()->WriteResponse("That would not achieve anything.");
         } else if (game->CurrentRoom()->name() != "Outside of ship") {
-          std::cout << "Nothing happens." << std::endl;
+          game->io()->WriteResponse("Nothing happens.");
         } else {
-          std::cout << "You have materialised inside your ship which has "
-                    << "immediately taken off." << std::endl;
+          game->io()->WriteResponse(
+              "You have materialised inside your ship"
+              " which has immediately taken off.");
           game->Over();
         }
       });
@@ -295,12 +302,13 @@ void Captive::CreateActions() {
         Item* aerial = game->GetItem("aerial");
         Room* room = game->CurrentRoom();
         if (room->name() != "Signal transmitter room") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else if (!room->HasItem(aerial)) {
-          std::cout << "The transmitter is missing an aerial." << std::endl;
+          game->io()->WriteResponse("The transmitter is missing an aerial.");
         } else {
-          std::cout << "An entrance has appeared into the 'air lock'."
-                    << std::endl;
+          game->io()->WriteResponse(
+              "An entrance has appeared into the"
+              " 'air lock'.");
           dynamic_cast<Captive*>(game)->air_lock_open_ = true;
         }
       });
@@ -308,21 +316,22 @@ void Captive::CreateActions() {
   handlers()["open_handler"] =
       new ActionHandler(Action::kOpen, this, [](Game* game, Item* item) {
         if (item->name() != "locked door") {
-          std::cout << "You can't do that." << std::endl;
+          game->io()->WriteResponse("You can't do that.");
         } else if (!game->CurrentRoom()->HasItem(item)) {
-          std::cout << "I don't see it here." << std::endl;
+          game->io()->WriteResponse("I don't see it here.");
         } else {
           if (!game->inventory().HasItem("shiny key")) {
-            std::cout << "You have no key." << std::endl;
+            game->io()->WriteResponse("You have no key.");
           } else {
             game->CurrentRoom()->RemoveItem(item);
             item = game->nowhere().GetItem("boulders");
             game->CurrentRoom()->PutItem(item);
             game->nowhere().RemoveItem(item);
             dynamic_cast<Captive*>(game)->air_lock_door_open_ = true;
-            std::cout << "The door came away in your hands, but the exit is "
-                      << "now blocked by boulders which had been behind the "
-                      << "door." << std::endl;
+            game->io()->WriteResponse(
+                "The door came away in your hands, but the exit is "
+                "now blocked by boulders which had been behind the "
+                "door.");
           }
         }
       });
@@ -429,33 +438,33 @@ void Captive::AfterTurn() {
 
   if (room_name == "Muddy area" && !inventory().HasItem("sabre") &&
       room->HasItem("mud man")) {
-    std::cout << "A mud-man has just killed you." << std::endl;
+    io()->WriteResponse("A mud-man has just killed you.");
     Over();
     return;
   }
   if (room_name == "Dimly lit passage") {
     Item* torch = inventory().GetItem("torch");
     if (!torch || !torch->HasState(ItemState::kLit)) {
-      std::cout << "You have fallen into a hole in the dim light." << std::endl;
+      io()->WriteResponse("You have fallen into a hole in the dim light.");
       Over();
       return;
     }
   }
   if (room_name == "Signal transmitter room" && transmitter_overheating_) {
-    std::cout << "The transmitter is overheating." << std::endl;
+    io()->WriteResponse("The transmitter is overheating.");
   }
   if (turns_ >= 20 && turns_ < 40) {
-    std::cout << "A rumbling sound can be heard." << std::endl;
+    io()->WriteResponse("A rumbling sound can be heard.");
   } else if (turns_ >= 40 && turns_ < 60) {
-    std::cout << "The noise is becoming louder." << std::endl;
+    io()->WriteResponse("The noise is becoming louder.");
   } else if (turns_ >= 60 && turns_ < 80) {
-    std::cout << "The ground is starting to shake." << std::endl;
+    io()->WriteResponse("The ground is starting to shake.");
   } else if (turns_ >= 80 && turns_ < 100) {
-    std::cout << "I'd advise you to get out quickly." << std::endl;
+    io()->WriteResponse("I'd advise you to get out quickly.");
   } else if (turns_ >= 100 && turns_ < 120) {
-    std::cout << "The roof is caving in." << std::endl;
+    io()->WriteResponse("The roof is caving in.");
   } else if (turns_ >= 120) {
-    std::cout << "The planet has blown up." << std::endl;
+    io()->WriteResponse("The planet has blown up.");
     Over();
   }
 }

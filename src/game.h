@@ -29,9 +29,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "item.h"
 #include "room.h"
 
+class Io;
+
 class Game {
  public:
-  Game();
+  Game(Io* io);
 
   void Run();
 
@@ -54,6 +56,8 @@ class Game {
   std::vector<Room*>& rooms() { return rooms_; }
 
   Room& inventory() { return inventory_; }
+
+  Io* io() { return io_; }
 
   Room& nowhere() { return nowhere_; }
 
@@ -79,6 +83,7 @@ class Game {
   Room nowhere_;
   Item nothing_;
   std::map<std::string, ActionHandler*> handlers_;
+  Io* io_;
 };
 
 #endif

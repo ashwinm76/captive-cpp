@@ -20,57 +20,45 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "game.h"
 
 #include <algorithm>
-#include <iostream>
 #include <string>
 
 #include "action.h"
 #include "command.h"
+#include "io.h"
 
-Game::Game()
-    : inventory_("Inventory"), nowhere_("Nowhere"), nothing_("nothing", {}) {}
+Game::Game(Io* io)
+    : inventory_("Inventory"),
+      nowhere_("Nowhere"),
+      nothing_("nothing", {}),
+      io_(io) {}
 
 void Game::Run() {
   room_ = 1;
   running_ = true;
 
   // Print instructions
-  std::cout
-      << "You have been captured by creatures on an uncharted planet."
-      << std::endl
-      << "Unfortunately the planet happens to be unstable,and has been "
-      << "evacuated." << std::endl
-      << "You therefore have to escape before the planet blows up with you on "
-      << "it." << std::endl
-      << "The computer has a fairly large number of commands,so if one command "
-      << "does not work then try another." << std::endl
-      << "The first three letters of each command and object need be typed "
-      << "in, although, if desired, the full word may be entered." << std::endl;
+  io_->WriteInstructions(
+      "You have been captured by creatures on an uncharted planet.\n"
+      "Unfortunately the planet happens to be unstable,and has been "
+      "evacuated.\n"
+      "You therefore have to escape before the planet blows up with you on "
+      "it.\n"
+      "The computer has a fairly large number of commands,so if one command "
+      "does not work then try another.\n"
+      "The first three letters of each command and object need be typed "
+      "in, although, if desired, the full word may be entered.\n");
 
   while (running_) {
     std::string input;
     Room* current_room = CurrentRoom();
-
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << current_room->name() << std::endl << "Exits:- ";
-    for (auto e : {Direction::kNorth, Direction::kSouth, Direction::kEast,
-                   Direction::kWest}) {
-      if (current_room->HasExit(e)) std::cout << ':' << e << ':';
-    }
-
-    std::cout << std::endl << std::endl << "Objects:- ";
-    for (auto item : current_room->items()) std::cout << item->name() << ":";
-
-    std::cout << std::endl << std::endl << "Inventory:- ";
-    for (auto item : inventory_.items()) std::cout << item->name() << ":";
-
-    std::cout << std::endl << std::endl << "Command? ";
-    std::getline(std::cin, input);
+    io_->WriteRoomInfo(*this);
+    input = io_->ReadCommand("Command? ");
     cmd_.Parse(input);
 
     Direction dir = MakeDirection(cmd_);
     if (dir != Direction::kNone) {
       if (!current_room->HasExit(dir)) {
-        std::cout << "No Exit!" << std::endl;
+        io_->WriteResponse("No Exit!");
       } else {
         room_ = current_room->GetConnectedRoom(dir);
       }
@@ -89,7 +77,7 @@ void Game::Run() {
           item = &nothing_;
         }
         if (!item->HandleAction(cmd_.action())) {
-          std::cout << "I can't do that." << std::endl;
+          io_->WriteResponse("I can't do that.");
         }
         break;
       }
