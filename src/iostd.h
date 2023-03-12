@@ -69,8 +69,9 @@ class IoStd : public Io {
   std::string ReadCommand(const std::string& prompt) {
     std::string input;
 
-    Write(prompt);
+    std::cout << prompt;
     std::getline(std::cin, input);
+    pos_ = 0;
     return input;
   }
 
