@@ -39,17 +39,17 @@ class Game {
 
   Direction MakeDirection(const Command cmd) const;
 
-  Item* GetItem(const std::string& name) const;
+  Item* GetItem(const std::string& name);
 
   Room* GetRoom(const std::string& name);
 
-  Room* CurrentRoom() { return rooms_[room_ - 1]; }
+  Room* CurrentRoom() { return current_room_; }
+
+  void StartingRoom(Room* room) { starting_room_ = room; }
 
   void Over() { running_ = false; }
 
   bool& running() { return running_; }
-
-  int& room() { return room_; }
 
   Command& cmd() { return cmd_; }
 
@@ -66,6 +66,12 @@ class Game {
   std::map<std::string, ActionHandler*>& handlers() { return handlers_; }
 
  protected:
+  Room* MakeRoom(const std::string& name) {
+    Room* r = new Room(name);
+    rooms().push_back(r);
+    return r;
+  }
+
   virtual void CreateRooms() = 0;
 
   virtual void CreateActions() = 0;
@@ -76,7 +82,8 @@ class Game {
 
  private:
   bool running_;
-  int room_;
+  Room* current_room_;
+  Room* starting_room_;
   Command cmd_;
   std::vector<Room*> rooms_;
   Room inventory_;

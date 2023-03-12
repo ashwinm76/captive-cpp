@@ -23,7 +23,7 @@ of a room are in parentheses.
                               |              |
                               |              |
                               |              |
-               +--------------+-----|  |-----+--------------+
+               +--------------+-----|xx|-----+--------------+
                |         [18] |         [20] |         [12] |
                | Observation  | Air Lock     | Altar        |
                | Point        - (LOCKED DOOR)| (SABRE)      |
@@ -58,7 +58,7 @@ of a room are in parentheses.
                | (TORCH)                     | (SHINY KEY)  |
                |              -              |              |
                |              |              |              |
-               +--------------+-----|  |-----+--------------+
+               +--------------+-----|xx|-----+--------------+
                               |          [1] |
                               | Prison Cell  |
                               | (DOOR)       |

@@ -30,23 +30,51 @@ class Item;
 
 class Room {
  public:
-  Room(const std::string& name, std::array<int, 4> connections = {0, 0, 0, 0})
-      : name_(name), connections_(connections) {}
+  struct Door {
+    bool enabled;
+    Room* room;
+  };
+
+  Room(const std::string& name) : name_(name) {
+    for (auto d : connections_) d.enabled = false;
+  }
 
   std::string name() const { return name_; }
 
-  int GetConnectedRoom(Direction dir) const {
-    return connections_[static_cast<int>(dir)];
+  void ConnectRoom(Room* room, Direction dir, bool enabled = true,
+                   bool oneway = false) {
+    connections_[static_cast<int>(dir)].enabled = enabled;
+    connections_[static_cast<int>(dir)].room = room;
+    if (!oneway) {
+      switch (dir) {
+        case Direction::kEast:
+          room->ConnectRoom(this, Direction::kWest, enabled, true);
+          break;
+        case Direction::kWest:
+          room->ConnectRoom(this, Direction::kEast, enabled, true);
+          break;
+        case Direction::kNorth:
+          room->ConnectRoom(this, Direction::kSouth, enabled, true);
+          break;
+        case Direction::kSouth:
+          room->ConnectRoom(this, Direction::kNorth, enabled, true);
+          break;
+        case Direction::kNone:
+          break;
+      }
+    }
+  }
+
+  Room* GetConnectedRoom(Direction dir) const {
+    return connections_[static_cast<int>(dir)].room;
   }
 
   bool HasExit(Direction dir) const {
-    return connections_[static_cast<int>(dir)] > 0;
+    return connections_[static_cast<int>(dir)].enabled;
   }
 
   void EnableExit(Direction dir) {
-    if (connections_[static_cast<int>(dir)] < 0) {
-      connections_[static_cast<int>(dir)] *= -1;
-    }
+    connections_[static_cast<int>(dir)].enabled = true;
   }
 
   void PutItem(Item* item) { items_.push_back(item); }
@@ -82,7 +110,7 @@ class Room {
 
  private:
   std::string name_;
-  std::array<int, 4> connections_;
+  std::array<Door, 4> connections_;
   std::vector<Item*> items_;
 };
 

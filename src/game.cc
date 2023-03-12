@@ -33,7 +33,7 @@ Game::Game(Io* io)
       io_(io) {}
 
 void Game::Run() {
-  room_ = 1;
+  current_room_ = starting_room_;
   running_ = true;
 
   while (running_) {
@@ -48,7 +48,7 @@ void Game::Run() {
       if (!current_room->HasExit(dir)) {
         io_->WriteResponse("No Exit!");
       } else {
-        room_ = current_room->GetConnectedRoom(dir);
+        current_room_ = current_room_->GetConnectedRoom(dir);
       }
       AfterTurn();
       continue;
@@ -89,8 +89,8 @@ Direction Game::MakeDirection(const Command cmd) const {
   }
 }
 
-Item* Game::GetItem(const std::string& name) const {
-  Item* i = rooms_[room_ - 1]->GetItem(name);
+Item* Game::GetItem(const std::string& name) {
+  Item* i = CurrentRoom()->GetItem(name);
   if (!i) {
     i = inventory_.GetItem(name);
   }
@@ -102,7 +102,7 @@ Item* Game::GetItem(const std::string& name) const {
 
 Room* Game::GetRoom(const std::string& name) {
   auto r =
-      std::find_if(rooms_.begin(), rooms_.end(),
+      std::find_if(rooms().begin(), rooms().end(),
                    [&name](const Room* room) { return room->name() == name; });
-  return (r == rooms_.end()) ? nullptr : *r;
+  return (r == rooms().end()) ? nullptr : *r;
 }

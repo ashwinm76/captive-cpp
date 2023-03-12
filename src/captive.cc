@@ -50,44 +50,50 @@ void Captive::Run() {
 }
 
 void Captive::CreateRooms() {
-  /* Map:
-        21
-        |
-      18-20 12
-      |     |
-  19-17-14-10-13
-            |
-      9--7--8
-        |  |
-  6--4--5  11-16
-      |     |
-      3--2  15
-        |
-        1
-  */
-  rooms() = {
-      new Room("Prison cell", {-2, 0, 0, 0}),
-      new Room("Bell tower", {0, 1, 0, 3}),
-      new Room("Winding staircase", {4, 0, 2, 0}),
-      new Room("Gunpowder chamber", {0, 3, 5, 6}),
-      new Room("Place with a rocky floor", {7, 0, 0, 4}),
-      new Room("Wall with scratches on it", {0, 0, 4, 0}),
-      new Room("Signal transmitter room", {0, 5, 8, 9}),
-      new Room("Room of chains", {10, 11, 0, 7}),
-      new Room("Padded cell", {0, 0, 7, 0}),
-      new Room("Area with a hole in the ceiling", {12, 8, 13, 14}),
-      new Room("Muddy area", {8, 15, 16, 0}),
-      new Room("Altar", {0, 10, 0, 0}),
-      new Room("Place beside a monolith", {0, 0, 0, 10}),
-      new Room("Dimly lit passage", {0, 0, 10, 17}),
-      new Room("Locksmiths", {11, 0, 0, 0}),
-      new Room("Frozen room", {0, 0, 0, 11}),
-      new Room("Brightly coloured room", {18, 0, 14, 19}),
-      new Room("Observation point", {0, 17, 20, 0}),
-      new Room("Repairs room", {0, 0, 17, 0}),
-      new Room("Air lock", {-21, 0, 0, 18}),
-      new Room("Outside of ship", {0, 20, 0, 0}),
-  };
+  Room* prison_cell = MakeRoom("Prison cell");
+  Room* bell_tower = MakeRoom("Bell tower");
+  Room* winding_staircase = MakeRoom("Winding staircase");
+  Room* gunpowder_chamber = MakeRoom("Gunpowder chamber");
+  Room* rocky_floor_room = MakeRoom("Place with a rocky floor");
+  Room* scratches_room = MakeRoom("Wall with scratches on it");
+  Room* transmitter_room = MakeRoom("Signal transmitter room");
+  Room* chains_room = MakeRoom("Room of chains");
+  Room* padded_cell = MakeRoom("Padded cell");
+  Room* hole_room = MakeRoom("Area with a hole in the ceiling");
+  Room* muddy_area = MakeRoom("Muddy area");
+  Room* altar = MakeRoom("Altar");
+  Room* monolith_room = MakeRoom("Place beside a monolith");
+  Room* dim_passage = MakeRoom("Dimly lit passage");
+  Room* locksmiths = MakeRoom("Locksmiths");
+  Room* frozen_room = MakeRoom("Frozen room");
+  Room* bright_room = MakeRoom("Brightly coloured room");
+  Room* observation_room = MakeRoom("Observation point");
+  Room* repairs_room = MakeRoom("Repairs room");
+  Room* air_lock = MakeRoom("Air lock");
+  Room* outside = MakeRoom("Outside of ship");
+
+  prison_cell->ConnectRoom(bell_tower, Direction::kNorth, false);
+  bell_tower->ConnectRoom(winding_staircase, Direction::kWest);
+  winding_staircase->ConnectRoom(gunpowder_chamber, Direction::kNorth);
+  gunpowder_chamber->ConnectRoom(scratches_room, Direction::kWest);
+  gunpowder_chamber->ConnectRoom(rocky_floor_room, Direction::kEast);
+  rocky_floor_room->ConnectRoom(transmitter_room, Direction::kNorth);
+  transmitter_room->ConnectRoom(padded_cell, Direction::kWest);
+  transmitter_room->ConnectRoom(chains_room, Direction::kEast);
+  chains_room->ConnectRoom(muddy_area, Direction::kSouth);
+  chains_room->ConnectRoom(hole_room, Direction::kNorth);
+  muddy_area->ConnectRoom(frozen_room, Direction::kEast);
+  muddy_area->ConnectRoom(locksmiths, Direction::kSouth);
+  hole_room->ConnectRoom(monolith_room, Direction::kEast);
+  hole_room->ConnectRoom(altar, Direction::kNorth);
+  hole_room->ConnectRoom(dim_passage, Direction::kWest);
+  dim_passage->ConnectRoom(bright_room, Direction::kWest);
+  bright_room->ConnectRoom(repairs_room, Direction::kWest);
+  bright_room->ConnectRoom(observation_room, Direction::kNorth);
+  observation_room->ConnectRoom(air_lock, Direction::kEast);
+  air_lock->ConnectRoom(outside, Direction::kNorth, false);
+
+  StartingRoom(prison_cell);
 }
 
 void Captive::CreateActions() {
