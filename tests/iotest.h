@@ -27,11 +27,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class IoTest : public IoStd {
  public:
   IoTest(std::vector<std::string> inputs, std::string output)
-      : passed_(false), inputs_(inputs), output_(output), in_count_(0) {}
+      : IoStd(80),
+        passed_(false),
+        inputs_(inputs),
+        output_(output),
+        in_count_(0) {}
 
   bool passed() { return passed_; }
 
-  void WriteResponse(const std::string& s) { 
+  void WriteResponse(const std::string& s) {
     std::cout << s << std::endl;
     if (in_count_ == inputs_.size()) passed_ = (s == output_);
   }

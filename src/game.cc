@@ -36,18 +36,6 @@ void Game::Run() {
   room_ = 1;
   running_ = true;
 
-  // Print instructions
-  io_->WriteInstructions(
-      "You have been captured by creatures on an uncharted planet.\n"
-      "Unfortunately the planet happens to be unstable,and has been "
-      "evacuated.\n"
-      "You therefore have to escape before the planet blows up with you on "
-      "it.\n"
-      "The computer has a fairly large number of commands,so if one command "
-      "does not work then try another.\n"
-      "The first three letters of each command and object need be typed "
-      "in, although, if desired, the full word may be entered.\n");
-
   while (running_) {
     std::string input;
     Room* current_room = CurrentRoom();

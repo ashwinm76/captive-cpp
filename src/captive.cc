@@ -35,6 +35,20 @@ Captive::Captive(Io* io) : Game(io) {
   CreateItems();
 }
 
+void Captive::Run() {
+  // Print instructions
+  io()->WriteInstructions(
+      "You have been captured by creatures on an uncharted planet."
+      " Unfortunately the planet happens to be unstable, and has been "
+      "evacuated."
+      " You therefore have to escape before the planet blows up with you on it."
+      " The computer has a fairly large number of commands, so if one command"
+      " does not work then try another."
+      " The first three letters of each command and object need be typed"
+      " in, although, if desired, the full word may be entered.");
+  Game::Run();
+}
+
 void Captive::CreateRooms() {
   /* Map:
         21

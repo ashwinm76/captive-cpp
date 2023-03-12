@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "iostd.h"
 
 int main(int argc, char **argv) {
-  IoStd io;
+  IoStd io(80);
   Captive captive(&io);
 
   captive.Run();

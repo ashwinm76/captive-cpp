@@ -21,6 +21,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #define CAPTIVE_SRC_IOSTD_H
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "game.h"
@@ -29,41 +30,71 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class IoStd : public Io {
  public:
-  void WriteInstructions(const std::string& s) { std::cout << s; }
+  IoStd(int width): width_(width), pos_(0) {}
+
+  void WriteInstructions(const std::string& s) { Write(s); }
 
   void WriteRoomInfo(Game& game) {
     Room* room = game.CurrentRoom();
 
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << room->name() << std::endl << "Exits:- ";
+    Write(std::string(width_, '-'));
+    WriteLn(room->name());
+    Write("Exits:- ");
     for (auto e : {Direction::kNorth, Direction::kSouth, Direction::kEast,
                    Direction::kWest}) {
-      if (room->HasExit(e)) std::cout << ':' << e << ':';
+      std::ostringstream os;
+      os << e;
+      if (room->HasExit(e)) Write(':' + os.str() + ':');
     }
 
-    std::cout << std::endl << std::endl << "Objects:- ";
-    for (auto item : room->items()) std::cout << item->name() << ":";
+    WriteLn("");
+    Write("Objects:- ");
+    for (auto item : room->items()) Write(item->name() + ":");
 
-    std::cout << std::endl << std::endl << "Inventory:- ";
-    for (auto item : game.inventory().items()) std::cout << item->name() << ":";
-    std::cout << std::endl;
+    WriteLn("");
+    Write("Inventory:- ");
+    for (auto item : game.inventory().items()) Write(item->name() + ":");
+    WriteLn("");
   }
 
-  void WriteResponse(const std::string& s) { std::cout << s << std::endl; }
+  void WriteResponse(const std::string& s) { WriteLn(s); }
 
   void WriteResponse(const std::list<const std::string>& m) {
     for (auto s : m) {
-      std::cout << s;
+      Write(s);
     }
-    std::cout << std::endl;
+    WriteLn("");
   }
 
   std::string ReadCommand(const std::string& prompt) {
     std::string input;
 
-    std::cout << std::endl << prompt;
+    Write(prompt);
     std::getline(std::cin, input);
     return input;
+  }
+
+ private:
+  int width_;
+  int pos_;
+
+  void Write(std::string s) {
+    std::istringstream ss(s);
+    std::string word;
+
+    while(ss >> word) {
+      if (pos_ + 1 + word.length() >= width_) {
+        pos_ = 0;
+        std::cout << std::endl;
+      }
+      std::cout << word << ' ';
+      pos_ += word.length() + 1;
+    }
+  }
+
+  void WriteLn(std::string s) {
+    Write(s);
+    std::cout << std::endl;
   }
 };
 

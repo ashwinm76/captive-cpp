@@ -26,6 +26,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 class Captive : public Game {
  public:
   Captive(Io* io);
+  void Run();
 
  protected:
   void CreateRooms();
