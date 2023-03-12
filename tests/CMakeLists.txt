@@ -17,28 +17,13 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-cmake_minimum_required(VERSION 3.24.2)
+add_executable(test_win1)
+target_sources(test_win1 PRIVATE test_win1.cc)
+target_link_libraries(test_win1 ${CMAKE_PROJECT_NAME}_lib)
 
-project(captive VERSION 1.0.0)
+add_executable(test_lose1)
+target_sources(test_lose1 PRIVATE test_lose1.cc)
+target_link_libraries(test_lose1 ${CMAKE_PROJECT_NAME}_lib)
 
-include(CTest)
-
-# Global compiler options
-add_compile_options(-Wall)
-
-add_executable(${CMAKE_PROJECT_NAME})
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/main.cc)
-target_link_libraries(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib)
-
-add_library(${CMAKE_PROJECT_NAME}_lib INTERFACE)
-target_compile_features(${CMAKE_PROJECT_NAME}_lib INTERFACE cxx_std_11)
-target_sources(${CMAKE_PROJECT_NAME}_lib INTERFACE
-  src/game.cc
-  src/common.cc
-  src/captive.cc
-)
-target_include_directories(${CMAKE_PROJECT_NAME}_lib INTERFACE 
-  ${PROJECT_SOURCE_DIR}/src
-)
-
-add_subdirectory(tests)
+add_test(NAME TestWin1 COMMAND test_win1)
+add_test(NAME TestLose1 COMMAND test_lose1)

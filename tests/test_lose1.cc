@@ -20,12 +20,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <vector>
 
 #include "captive.h"
-#include "iostd.h"
+#include "iotest.h"
 
 int main(int argc, char **argv) {
-  IoStd io;
+  IoTest io({"kick door", "n", "ring bell"},  // die here,
+            "You have woken the dead who do not like you too much.");
   Captive captive(&io);
 
   captive.Run();
-  return 0;
+  return io.passed() ? 0 : 1;
 }

@@ -17,43 +17,29 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef CAPTIVE_SRC_IOSTD_H
-#define CAPTIVE_SRC_IOSTD_H
+#ifndef CAPTIVE_SRC_IOTEST_H
+#define CAPTIVE_SRC_IOTEST_H
 
-#include <iostream>
-#include <string>
+#include <vector>
 
-#include "game.h"
-#include "io.h"
-#include "room.h"
+#include "iostd.h"
 
-class IoStd : public Io {
+class IoTest : public IoStd {
  public:
-  void WriteInstructions(const std::string& s) { std::cout << s; }
+  IoTest(std::vector<std::string> inputs, std::string output)
+      : passed_(false), inputs_(inputs), output_(output), in_count_(0) {}
 
-  void WriteRoomInfo(Game& game) {
-    Room* room = game.CurrentRoom();
+  bool passed() { return passed_; }
 
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << room->name() << std::endl << "Exits:- ";
-    for (auto e : {Direction::kNorth, Direction::kSouth, Direction::kEast,
-                   Direction::kWest}) {
-      if (room->HasExit(e)) std::cout << ':' << e << ':';
-    }
-
-    std::cout << std::endl << std::endl << "Objects:- ";
-    for (auto item : room->items()) std::cout << item->name() << ":";
-
-    std::cout << std::endl << std::endl << "Inventory:- ";
-    for (auto item : game.inventory().items()) std::cout << item->name() << ":";
-    std::cout << std::endl;
+  void WriteResponse(const std::string& s) { 
+    std::cout << s << std::endl;
+    if (in_count_ == inputs_.size()) passed_ = (s == output_);
   }
-
-  void WriteResponse(const std::string& s) { std::cout << s << std::endl; }
 
   void WriteResponse(const std::list<const std::string>& m) {
     for (auto s : m) {
       std::cout << s;
+      if (in_count_ == inputs_.size()) passed_ = (s == output_);
     }
     std::cout << std::endl;
   }
@@ -62,9 +48,20 @@ class IoStd : public Io {
     std::string input;
 
     std::cout << std::endl << prompt;
-    std::getline(std::cin, input);
+    if (in_count_ < inputs_.size()) {
+      input = inputs_[in_count_++];
+    } else {
+      input = "quit";
+    }
+    std::cout << input << std::endl;
     return input;
   }
+
+ private:
+  bool passed_;
+  std::vector<std::string> inputs_;
+  std::string output_;
+  int in_count_;
 };
 
 #endif
