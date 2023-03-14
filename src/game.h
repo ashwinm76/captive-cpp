@@ -28,8 +28,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "command.h"
 #include "item.h"
 #include "room.h"
-
-class Io;
+#include "io.h"
 
 class Game {
  public:
@@ -56,6 +55,30 @@ class Game {
   std::vector<Room*>& rooms() { return rooms_; }
 
   Room& inventory() { return inventory_; }
+
+  virtual bool DontHaveItem(Item* item) {
+    if (inventory().HasItem(item)) {
+      io()->WriteResponse({"You already have ", item->name(), "."});
+      return false;
+    }
+    return true;
+  }
+
+  virtual bool HaveItem(Item* item) {
+    if (!inventory().HasItem(item)) {
+      io()->WriteResponse({"You don't have ", item->name(), "."});
+      return false;
+    }
+    return true;
+  }
+
+  virtual bool ItemInCurrentRoom(Item* item) {
+    if (!CurrentRoom()->HasItem(item)) {
+      io()->WriteResponse({"I don't see ", item->name(), " here."});
+      return false;
+    }
+    return true;
+  }
 
   Io* io() { return io_; }
 

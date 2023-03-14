@@ -34,8 +34,8 @@ class IoStd : public Io {
 
   void WriteInstructions(const std::string& s) { Write(s); }
 
-  void WriteRoomInfo(Game& game) {
-    Room* room = game.CurrentRoom();
+  void WriteRoomInfo(Game* game) {
+    Room* room = game->CurrentRoom();
 
     Write(std::string(width_, '-'));
     WriteLn(room->name());
@@ -53,11 +53,13 @@ class IoStd : public Io {
 
     WriteLn("");
     Write("Inventory:- ");
-    for (auto item : game.inventory().items()) Write(item->name() + ":");
+    for (auto item : game->inventory().items()) Write(item->name() + ":");
     WriteLn("");
   }
 
   void WriteResponse(const std::string& s) { WriteLn(s); }
+
+  void WriteStatus(const std::string& s) { WriteLn(s); }
 
   void WriteResponse(const std::list<const std::string>& m) {
     for (auto s : m) {
@@ -96,6 +98,7 @@ class IoStd : public Io {
   void WriteLn(std::string s) {
     Write(s);
     std::cout << std::endl;
+    pos_ = 0;
   }
 };
 

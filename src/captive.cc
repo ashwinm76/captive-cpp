@@ -19,20 +19,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "captive.h"
 
+#include "common.h"
+
 Captive::Captive(Io* io) : Game(io) {
   transmitter_overheating_ = true;
   air_lock_open_ = false;
-  air_lock_door_open_ = false;
   turns_ = 0;
-
-  // Create rooms
-  CreateRooms();
-
-  // Create action handlers
-  CreateActions();
-
-  // Create items
-  CreateItems();
 }
 
 void Captive::Run() {
@@ -99,19 +91,14 @@ void Captive::CreateRooms() {
 void Captive::CreateActions() {
   handlers()["get_handler"] =
       new ActionHandler(Action::kGet, this, [](Game* game, Item* item) {
-        if (game->inventory().HasItem(item)) {
-          game->io()->WriteResponse({"You already have ", item->name(), "."});
-        } else if (!game->CurrentRoom()->HasItem(item)) {
-          game->io()->WriteResponse({"I don't see ", item->name(), " here."});
-        } else {
+        if (game->DontHaveItem(item) && game->ItemInCurrentRoom(item)) {
           Item* gloves;
-          if (item->name() == "ice block" &&
+          if (item->Is("ice block") &&
               (!(gloves = game->inventory().GetItem("gloves")) ||
                !gloves->HasState(ItemState::kWorn))) {
             game->io()->WriteResponse("It is too cold to carry.");
           } else {
-            game->CurrentRoom()->RemoveItem(item);
-            game->inventory().PutItem(item);
+            game->CurrentRoom()->MoveItem(item, &game->inventory());
             game->io()->WriteResponse("OK.");
           }
         }
@@ -119,31 +106,23 @@ void Captive::CreateActions() {
 
   handlers()["drop_handler"] =
       new ActionHandler(Action::kDrop, this, [](Game* game, Item* item) {
-        if (!game->inventory().HasItem(item)) {
-          game->io()->WriteResponse({"You don't have ", item->name(), "."});
-        } else {
-          std::string name = item->name();
+        if (game->HaveItem(item)) {
           Room* room = game->CurrentRoom();
-          if (name == "ice block" &&
-              room->name() == "Signal transmitter room") {
+          if (item->Is("ice block") && room->Is("Signal transmitter room")) {
             Captive* captive = dynamic_cast<Captive*>(game);
             Room* rr = captive->GetRoom("Repairs room");
             rr->RemoveItem("wire");
-            Item* i = game->nowhere().GetItem("aerial");
-            game->nowhere().RemoveItem(i);
-            rr->PutItem(i);
+            game->nowhere().MoveItem("aerial", rr);
             captive->transmitter_overheating_ = false;
             game->io()->WriteResponse(
                 "The transmitter has cooled down, but it"
                 " does not have an aerial.");
-          } else if (name == "aerial" &&
-                     room->name() == "Signal transmitter room") {
-            game->inventory().RemoveItem(item);
-            room->PutItem(item);
+          } else if (item->Is("aerial") &&
+                     room->Is("Signal transmitter room")) {
+            game->inventory().MoveItem(item, room);
             game->io()->WriteResponse("The transmitter is fully operational.");
           } else {
-            game->CurrentRoom()->PutItem(item);
-            game->inventory().RemoveItem(item);
+            game->inventory().MoveItem(item, game->CurrentRoom());
             game->io()->WriteResponse("OK.");
           }
         }
@@ -152,22 +131,23 @@ void Captive::CreateActions() {
   handlers()["throw_handler"] =
       new ActionHandler(Action::kThrow, this, [](Game* game, Item* item) {
         Item* hp = game->inventory().GetItem("headphones");
-        Captive* captive = dynamic_cast<Captive*>(game);
-        if (!game->inventory().HasItem(item)) {
-          game->io()->WriteResponse({"You don't have ", item->name(), "."});
-        } else if (item->name() != "grenade" || !captive->air_lock_door_open_) {
-          game->io()->WriteResponse("That would not achieve anything.");
-        } else if (game->CurrentRoom()->name() != "Air lock") {
-          game->io()->WriteResponse("That would not achieve anything.");
-        } else if (!hp || !hp->HasState(ItemState::kWorn)) {
-          game->io()->WriteResponse(
-              "The noise from the explosion has burst"
-              " your ear drums. The shock of this has killed you.");
-          game->Over();
-        } else {
+        if (game->HaveItem(item)) {
+          // Only throw the grenade at the boulders
+          if (!item->Is("grenade") ||
+              !game->CurrentRoom()->HasItem("boulders")) {
+            game->io()->WriteResponse("That would not achieve anything.");
+            return;
+          }
+          // Check if you're wearing headphones when throwing the grenade
+          if (!hp || !hp->HasState(ItemState::kWorn)) {
+            game->io()->WriteResponse(
+                "The noise from the explosion has burst"
+                " your ear drums. The shock of this has killed you.");
+            game->Over();
+            return;
+          }
           game->CurrentRoom()->EnableExit(Direction::kNorth);
-          game->CurrentRoom()->RemoveItem(
-              game->CurrentRoom()->GetItem("boulders"));
+          game->CurrentRoom()->RemoveItem("boulders");
           game->inventory().RemoveItem(item);
           game->io()->WriteResponse(
               "You have cleared a passage through the "
@@ -177,95 +157,93 @@ void Captive::CreateActions() {
 
   handlers()["cut_handler"] =
       new ActionHandler(Action::kCut, this, [](Game* game, Item* item) {
-        if (!game->inventory().HasItem(item)) {
-          game->io()->WriteResponse({"You don't have ", item->name(), "."});
-        } else if (item->name() != "rough metal") {
-          game->io()->WriteResponse("You can't do that.");
-        } else if (game->CurrentRoom()->name() != "Locksmiths") {
-          game->io()->WriteResponse("I see no place where it can be cut.");
-        } else {
-          game->inventory().RemoveItem(item);
-          item = game->nowhere().GetItem("shiny key");
-          game->CurrentRoom()->PutItem(item);
-          game->nowhere().RemoveItem(item);
-          game->io()->WriteResponse("OK.");
+        if (game->HaveItem(item)) {
+          if (!item->Is("rough metal")) {
+            game->io()->WriteResponse("You can't do that.");
+          } else if (!game->CurrentRoom()->Is("Locksmiths")) {
+            game->io()->WriteResponse("I see no place where it can be cut.");
+          } else {
+            game->inventory().RemoveItem(item);
+            game->nowhere().MoveItem("shiny key", game->CurrentRoom());
+            game->io()->WriteResponse("OK.");
+          }
         }
       });
 
   handlers()["wear_handler"] =
       new ActionHandler(Action::kWear, this, [](Game* game, Item* item) {
-        if (!game->inventory().HasItem(item)) {
-          game->io()->WriteResponse({"You don't have ", item->name(), "."});
-        } else if (item->name() != "headphones" && item->name() != "gloves") {
-          game->io()->WriteResponse("You can't do that.");
-        } else {
-          item->AddState(ItemState::kWorn);
-          game->io()->WriteResponse("OK.");
+        if (game->HaveItem(item)) {
+          if (!item->Is("headphones") && !item->Is("gloves")) {
+            game->io()->WriteResponse("You can't do that.");
+          } else {
+            item->AddState(ItemState::kWorn);
+            game->io()->WriteResponse("OK.");
+          }
         }
       });
 
   handlers()["light_handler"] =
       new ActionHandler(Action::kLight, this, [](Game* game, Item* item) {
-        if (!game->inventory().HasItem(item)) {
-          game->io()->WriteResponse({"You don't have ", item->name(), "."});
-        } else if (item->name() != "torch") {
-          game->io()->WriteResponse("You can't do that.");
-        } else if (item->HasState(ItemState::kLit)) {
-          game->io()->WriteResponse("It is already lit.");
-        } else {
-          item->AddState(ItemState::kLit);
-          game->io()->WriteResponse("OK.");
+        if (game->HaveItem(item)) {
+          if (!item->Is("torch")) {
+            game->io()->WriteResponse("You can't do that.");
+          } else if (item->HasState(ItemState::kLit)) {
+            game->io()->WriteResponse("It is already lit.");
+          } else {
+            item->AddState(ItemState::kLit);
+            game->io()->WriteResponse("OK.");
+          }
         }
       });
 
   handlers()["kick_handler"] =
       new ActionHandler(Action::kKick, this, [](Game* game, Item* item) {
-        if (item->name() != "door") {
-          game->io()->WriteResponse("You can't do that.");
-        } else if (!game->CurrentRoom()->HasItem(item)) {
-          game->io()->WriteResponse("I don't see it here.");
-        } else {
-          if (game->CurrentRoom()->name() == "Prison cell") {
+        if (game->ItemInCurrentRoom(item)) {
+          if (!item->Is("door")) {
+            game->io()->WriteResponse("You can't do that.");
+          } else if (game->CurrentRoom()->Is("Prison cell")) {
             game->CurrentRoom()->EnableExit(Direction::kNorth);
             game->CurrentRoom()->RemoveItem(item);
             game->io()->WriteResponse(
                 "The hinges were weak and the door has collapsed into a "
                 "pile of dust.");
+          } else {
+            game->io()->WriteResponse("Nothing happens.");
           }
         }
       });
 
   handlers()["ring_handler"] =
       new ActionHandler(Action::kRing, this, [](Game* game, Item* item) {
-        if (item->name() != "bell") {
-          game->io()->WriteResponse("You can't do that.");
-        } else if (!game->CurrentRoom()->HasItem(item)) {
-          game->io()->WriteResponse("I don't see it here.");
-        } else {
-          game->io()->WriteResponse(
-              "You have woken the dead who do not like "
-              "you too much.");
-          game->Over();
+        if (game->ItemInCurrentRoom(item)) {
+          if (!item->Is("bell")) {
+            game->io()->WriteResponse("You can't do that.");
+          } else {
+            game->io()->WriteResponse(
+                "You have woken the dead who do not like "
+                "you too much.");
+            game->Over();
+          }
         }
       });
 
   handlers()["read_handler"] =
       new ActionHandler(Action::kRead, this, [](Game* game, Item* item) {
-        if (item->name() != "scratches" && item->name() != "inscription") {
-          game->io()->WriteResponse("You can't do that.");
-        } else if (!game->CurrentRoom()->HasItem(item)) {
-          game->io()->WriteResponse("I don't see it here.");
-        } else {
-          if (item->name() == "scratches") {
-            game->io()->WriteResponse(
-                "A transmitted signal will allow a door"
-                " from the 'air lock'  to be opened.");
+        if (game->ItemInCurrentRoom(item)) {
+          if (!item->Is("scratches") && !item->Is("inscription")) {
+            game->io()->WriteResponse("You can't do that.");
           } else {
-            item = game->inventory().GetItem("magnifier");
-            if (item == nullptr) {
-              game->io()->WriteResponse("The writing is too small to read.");
+            if (item->Is("scratches")) {
+              game->io()->WriteResponse(
+                  "A transmitted signal will allow a door"
+                  " from the 'air lock'  to be opened.");
             } else {
-              game->io()->WriteResponse("The magic word is 'swarck'.");
+              item = game->inventory().GetItem("magnifier");
+              if (item == nullptr) {
+                game->io()->WriteResponse("The writing is too small to read.");
+              } else {
+                game->io()->WriteResponse("The magic word is 'swarck'.");
+              }
             }
           }
         }
@@ -273,41 +251,41 @@ void Captive::CreateActions() {
 
   handlers()["look_handler"] =
       new ActionHandler(Action::kLook, this, [](Game* game, Item* item) {
-        if (item->name() != "hole" && item->name() != "window") {
-          game->io()->WriteResponse("That would not achieve anything.");
-        } else if (!game->CurrentRoom()->HasItem(item)) {
-          game->io()->WriteResponse("I don't see it here.");
-        } else {
-          if (item->name() == "hole") {
-            game->io()->WriteResponse(
-                "Something large has fallen through the"
-                " hole and flattened you.");
-            game->Over();
+        if (game->ItemInCurrentRoom(item)) {
+          if (!item->Is("hole") && !item->Is("window")) {
+            game->io()->WriteResponse("That would not achieve anything.");
           } else {
-            game->io()->WriteResponse(
-                "A space ship can be seen outside.It is"
-                " ready to take off.");
+            if (item->Is("hole")) {
+              game->io()->WriteResponse(
+                  "Something large has fallen through the"
+                  " hole and flattened you.");
+              game->Over();
+            } else {
+              game->io()->WriteResponse(
+                  "A space ship can be seen outside.It is"
+                  " ready to take off.");
+            }
           }
         }
       });
 
   handlers()["kill_handler"] =
       new ActionHandler(Action::kKill, this, [](Game* game, Item* item) {
-        if (item->name() != "mud man") {
-          game->io()->WriteResponse("You can't do that.");
-        } else if (!game->CurrentRoom()->HasItem(item)) {
-          game->io()->WriteResponse("I don't see it here.");
-        } else {
-          game->io()->WriteResponse("You have killed the mud-man.");
-          game->CurrentRoom()->RemoveItem(item);
+        if (game->ItemInCurrentRoom(item)) {
+          if (!item->Is("mud man")) {
+            game->io()->WriteResponse("You can't do that.");
+          } else {
+            game->io()->WriteResponse("You have killed the mud-man.");
+            game->CurrentRoom()->RemoveItem(item);
+          }
         }
       });
 
   handlers()["say_handler"] =
       new ActionHandler(Action::kSay, this, [](Game* game, Item* item) {
-        if (item->name() != "swarck") {
+        if (!item->Is("swarck")) {
           game->io()->WriteResponse("That would not achieve anything.");
-        } else if (game->CurrentRoom()->name() != "Outside of ship") {
+        } else if (!game->CurrentRoom()->Is("Outside of ship")) {
           game->io()->WriteResponse("Nothing happens.");
         } else {
           game->io()->WriteResponse(
@@ -321,37 +299,35 @@ void Captive::CreateActions() {
       new ActionHandler(Action::kTransmit, this, [](Game* game, Item* item) {
         Item* aerial = game->GetItem("aerial");
         Room* room = game->CurrentRoom();
-        if (room->name() != "Signal transmitter room") {
+        if (!room->Is("Signal transmitter room")) {
           game->io()->WriteResponse("You can't do that.");
         } else if (!room->HasItem(aerial)) {
           game->io()->WriteResponse("The transmitter is missing an aerial.");
         } else {
           game->io()->WriteResponse(
-              "An entrance has appeared into the"
-              " 'air lock'.");
+              "An entrance has appeared into the 'air lock'.");
           dynamic_cast<Captive*>(game)->air_lock_open_ = true;
         }
       });
 
   handlers()["open_handler"] =
       new ActionHandler(Action::kOpen, this, [](Game* game, Item* item) {
-        if (item->name() != "locked door") {
-          game->io()->WriteResponse("You can't do that.");
-        } else if (!game->CurrentRoom()->HasItem(item)) {
-          game->io()->WriteResponse("I don't see it here.");
-        } else {
-          if (!game->inventory().HasItem("shiny key")) {
-            game->io()->WriteResponse("You have no key.");
+        if (game->ItemInCurrentRoom(item)) {
+          if (!item->Is("locked door")) {
+            game->io()->WriteResponse("You can't do that.");
           } else {
-            game->CurrentRoom()->RemoveItem(item);
-            item = game->nowhere().GetItem("boulders");
-            game->CurrentRoom()->PutItem(item);
-            game->nowhere().RemoveItem(item);
-            dynamic_cast<Captive*>(game)->air_lock_door_open_ = true;
-            game->io()->WriteResponse(
-                "The door came away in your hands, but the exit is "
-                "now blocked by boulders which had been behind the "
-                "door.");
+            if (!dynamic_cast<Captive*>(game)->air_lock_open_) {
+              game->io()->WriteResponse("The air lock is disabled.");
+            } else if (!game->inventory().HasItem("shiny key")) {
+              game->io()->WriteResponse("You have no key.");
+            } else {
+              game->CurrentRoom()->RemoveItem(item);
+              game->nowhere().MoveItem("boulders", game->CurrentRoom());
+              game->io()->WriteResponse(
+                  "The door came away in your hands, but the exit is "
+                  "now blocked by boulders which had been behind the "
+                  "door.");
+            }
           }
         }
       });
@@ -471,20 +447,20 @@ void Captive::AfterTurn() {
     }
   }
   if (room_name == "Signal transmitter room" && transmitter_overheating_) {
-    io()->WriteResponse("The transmitter is overheating.");
+    io()->WriteStatus("The transmitter is overheating.");
   }
   if (turns_ >= 20 && turns_ < 40) {
-    io()->WriteResponse("A rumbling sound can be heard.");
+    io()->WriteStatus("A rumbling sound can be heard.");
   } else if (turns_ >= 40 && turns_ < 60) {
-    io()->WriteResponse("The noise is becoming louder.");
+    io()->WriteStatus("The noise is becoming louder.");
   } else if (turns_ >= 60 && turns_ < 80) {
-    io()->WriteResponse("The ground is starting to shake.");
+    io()->WriteStatus("The ground is starting to shake.");
   } else if (turns_ >= 80 && turns_ < 100) {
-    io()->WriteResponse("I'd advise you to get out quickly.");
+    io()->WriteStatus("I'd advise you to get out quickly.");
   } else if (turns_ >= 100 && turns_ < 120) {
-    io()->WriteResponse("The roof is caving in.");
+    io()->WriteStatus("The roof is caving in.");
   } else if (turns_ >= 120) {
-    io()->WriteResponse("The planet has blown up.");
+    io()->WriteStatus("The planet has blown up.");
     Over();
   }
 }

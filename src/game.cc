@@ -33,13 +33,22 @@ Game::Game(Io* io)
       io_(io) {}
 
 void Game::Run() {
+  // Create rooms
+  CreateRooms();
+
+  // Create action handlers
+  CreateActions();
+
+  // Create items
+  CreateItems();
+
   current_room_ = starting_room_;
   running_ = true;
 
   while (running_) {
     std::string input;
     Room* current_room = CurrentRoom();
-    io_->WriteRoomInfo(*this);
+    io_->WriteRoomInfo(this);
     input = io_->ReadCommand("Command? ");
     cmd_.Parse(input);
 

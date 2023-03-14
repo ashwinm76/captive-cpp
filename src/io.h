@@ -23,14 +23,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <list>
 #include <string>
 
-#include "game.h"
+class Game;
 
 class Io {
  public:
   virtual void WriteInstructions(const std::string& s) = 0;
-  virtual void WriteRoomInfo(Game& game) = 0;
+  virtual void WriteRoomInfo(Game* game) = 0;
   virtual void WriteResponse(const std::string& s) = 0;
   virtual void WriteResponse(const std::list<const std::string>& m) = 0;
+  virtual void WriteStatus(const std::string& s) = 0;
   virtual std::string ReadCommand(const std::string& prompt) = 0;
 };
 

@@ -37,6 +37,7 @@ class Item {
   }
 
   std::string name() const { return name_; }
+  bool Is(const std::string &s) { return name_ == s; }
 
   void AddActionHandler(const ActionHandler* handler) {
     action_handlers_.push_back(handler);

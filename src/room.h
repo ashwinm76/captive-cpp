@@ -41,6 +41,8 @@ class Room {
 
   std::string name() const { return name_; }
 
+  bool Is(const std::string& s) { return name_ == s; }
+
   void ConnectRoom(Room* room, Direction dir, bool enabled = true,
                    bool oneway = false) {
     connections_[static_cast<int>(dir)].enabled = enabled;
@@ -81,6 +83,17 @@ class Room {
 
   void RemoveItem(const Item* item) {
     items_.erase(std::find(items_.begin(), items_.end(), item));
+  }
+
+  void MoveItem(Item* item, Room* room) {
+    RemoveItem(item);
+    room->PutItem(item);
+  }
+
+  void MoveItem(const std::string& item_name, Room* room) {
+    Item* item = GetItem(item_name);
+    RemoveItem(item);
+    room->PutItem(item);
   }
 
   void RemoveItem(const std::string& name) {

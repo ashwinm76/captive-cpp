@@ -40,7 +40,6 @@ class Captive : public Game {
  private:
   bool transmitter_overheating_;
   bool air_lock_open_;
-  bool air_lock_door_open_;
   int turns_;
 };
 
