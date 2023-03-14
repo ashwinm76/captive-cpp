@@ -17,13 +17,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-add_executable(test_win1)
-target_sources(test_win1 PRIVATE test_win1.cc)
-target_link_libraries(test_win1 ${CMAKE_PROJECT_NAME}_lib)
+add_executable(test_fixture)
+target_sources(test_fixture PRIVATE test_fixture.cc)
+target_link_libraries(test_fixture ${CMAKE_PROJECT_NAME}_lib)
 
-add_executable(test_lose1)
-target_sources(test_lose1 PRIVATE test_lose1.cc)
-target_link_libraries(test_lose1 ${CMAKE_PROJECT_NAME}_lib)
-
-add_test(NAME TestWin1 COMMAND test_win1)
-add_test(NAME TestLose1 COMMAND test_lose1)
+add_test(NAME TestWin1 COMMAND test_fixture ${CMAKE_CURRENT_LIST_DIR}/win1.txt)
+add_test(NAME TestLose1 COMMAND test_fixture ${CMAKE_CURRENT_LIST_DIR}/lose1.txt)
+add_test(NAME TestLose2 COMMAND test_fixture ${CMAKE_CURRENT_LIST_DIR}/lose2.txt)
+add_test(NAME TestLose3 COMMAND test_fixture ${CMAKE_CURRENT_LIST_DIR}/lose3.txt)
+add_test(NAME TestLose4 COMMAND test_fixture ${CMAKE_CURRENT_LIST_DIR}/lose4.txt)

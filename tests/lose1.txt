@@ -1,0 +1,5 @@
+# Test to ring the bell and die
+kick door
+n
+ring bell
+You have woken the dead who do not like you too much.
