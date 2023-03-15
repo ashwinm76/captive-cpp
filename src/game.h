@@ -26,9 +26,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 #include "action.h"
 #include "command.h"
+#include "io.h"
 #include "item.h"
 #include "room.h"
-#include "io.h"
 
 class Game {
  public:
@@ -56,29 +56,11 @@ class Game {
 
   Room& inventory() { return inventory_; }
 
-  virtual bool DontHaveItem(Item* item) {
-    if (inventory().HasItem(item)) {
-      io()->WriteResponse({"You already have ", item->name(), "."});
-      return false;
-    }
-    return true;
-  }
+  virtual bool DontHaveItem(Item* item);
 
-  virtual bool HaveItem(Item* item) {
-    if (!inventory().HasItem(item)) {
-      io()->WriteResponse({"You don't have ", item->name(), "."});
-      return false;
-    }
-    return true;
-  }
+  virtual bool HaveItem(Item* item);
 
-  virtual bool ItemInCurrentRoom(Item* item) {
-    if (!CurrentRoom()->HasItem(item)) {
-      io()->WriteResponse({"I don't see ", item->name(), " here."});
-      return false;
-    }
-    return true;
-  }
+  virtual bool ItemInCurrentRoom(Item* item);
 
   Io* io() { return io_; }
 
@@ -89,11 +71,9 @@ class Game {
   std::map<std::string, ActionHandler*>& handlers() { return handlers_; }
 
  protected:
-  Room* MakeRoom(const std::string& name) {
-    Room* r = new Room(name);
-    rooms().push_back(r);
-    return r;
-  }
+  Room* MakeRoom(const std::string& name);
+  Item* MakeItem(const std::string& name, const std::string& room = "",
+                 std::vector<Action> actions = {});
 
   virtual void CreateRooms() = 0;
 

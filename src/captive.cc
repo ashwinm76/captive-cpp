@@ -31,8 +31,8 @@ void Captive::Run() {
   // Print instructions
   io()->WriteInstructions(
       "You have been captured by creatures on an uncharted planet."
-      " Unfortunately the planet happens to be unstable, and has been "
-      "evacuated."
+      " Unfortunately the planet happens to be unstable, and has been"
+      " evacuated."
       " You therefore have to escape before the planet blows up with you on it."
       " The computer has a fairly large number of commands, so if one command"
       " does not work then try another."
@@ -334,111 +334,75 @@ void Captive::CreateActions() {
 }
 
 void Captive::CreateItems() {
-  Item* item;
-  ActionHandler* get_handler = handlers()["get_handler"];
-  ActionHandler* drop_handler = handlers()["drop_handler"];
-  ActionHandler* throw_handler = handlers()["throw_handler"];
-  ActionHandler* cut_handler = handlers()["cut_handler"];
-  ActionHandler* wear_handler = handlers()["wear_handler"];
-  ActionHandler* light_handler = handlers()["light_handler"];
-  ActionHandler* kick_handler = handlers()["kick_handler"];
-  ActionHandler* ring_handler = handlers()["ring_handler"];
-  ActionHandler* read_handler = handlers()["read_handler"];
-  ActionHandler* look_handler = handlers()["look_handler"];
-  ActionHandler* kill_handler = handlers()["kill_handler"];
-  ActionHandler* say_handler = handlers()["say_handler"];
-  ActionHandler* transmit_handler = handlers()["transmit_handler"];
-  ActionHandler* open_handler = handlers()["open_handler"];
-
-  item = new Item("nothing", {transmit_handler});
+  // Dummy item for the transmit action
+  nothing() = *MakeItem("nothing", "", {Action::kTransmit});
 
   // Grenade
-  item = new Item("grenade", {get_handler, drop_handler, throw_handler});
-  GetRoom("Gunpowder chamber")->PutItem(item);
+  MakeItem("grenade", "Gunpowder chamber",
+           {Action::kGet, Action::kDrop, Action::kThrow});
   // Rough metal
-  item = new Item("rough metal", {get_handler, drop_handler, cut_handler});
-  GetRoom("Room of chains")->PutItem(item);
+  MakeItem("rough metal", "Room of chains",
+           {Action::kGet, Action::kDrop, Action::kCut});
   // Shiny key
-  item = new Item("shiny key", {get_handler, drop_handler});
-  nowhere().PutItem(item);
+  MakeItem("shiny key", "Nowhere", {Action::kGet, Action::kDrop});
   // Ice block
-  item = new Item("ice block", {get_handler, drop_handler});
-  GetRoom("Frozen room")->PutItem(item);
+  MakeItem("ice block", "Frozen room", {Action::kGet, Action::kDrop});
   // Gloves
-  item = new Item("gloves", {get_handler, drop_handler, wear_handler});
-  GetRoom("Place with a rocky floor")->PutItem(item);
-  // sabre
-  item = new Item("sabre", {get_handler, drop_handler});
-  GetRoom("Altar")->PutItem(item);
-  // aerial
-  item = new Item("aerial", {get_handler, drop_handler});
-  nowhere().PutItem(item);
+  MakeItem("gloves", "Place with a rocky floor",
+           {Action::kGet, Action::kDrop, Action::kWear});
+  // Sabre
+  MakeItem("sabre", "Altar", {Action::kGet, Action::kDrop});
+  // Aerial
+  MakeItem("aerial", "Nowhere", {Action::kGet, Action::kDrop});
   // Torch
-  item = new Item("torch", {get_handler, drop_handler, light_handler});
-  GetRoom("Winding staircase")->PutItem(item);
+  MakeItem("torch", "Winding staircase",
+           {Action::kGet, Action::kDrop, Action::kLight});
   // Headphones
-  item = new Item("headphones", {get_handler, drop_handler, wear_handler});
-  GetRoom("Padded cell")->PutItem(item);
+  MakeItem("headphones", "Padded cell",
+           {Action::kGet, Action::kDrop, Action::kWear});
   // Magnifier
-  item = new Item("magnifier", {get_handler, drop_handler});
-  GetRoom("Brightly coloured room")->PutItem(item);
+  MakeItem("magnifier", "Brightly coloured room",
+           {Action::kGet, Action::kDrop});
   // Locked door
-  item = new Item("locked door", {open_handler});
-  GetRoom("Air lock")->PutItem(item);
+  MakeItem("locked door", "Air lock", {Action::kOpen});
   // Door
-  item = new Item("door", {kick_handler});
-  GetRoom("Prison cell")->PutItem(item);
+  MakeItem("door", "Prison cell", {Action::kKick});
   // Bell
-  item = new Item("bell", {ring_handler});
-  GetRoom("Bell tower")->PutItem(item);
+  MakeItem("bell", "Bell tower", {Action::kRing});
   // Scratches
-  item = new Item("scratches", {read_handler});
-  GetRoom("Wall with scratches on it")->PutItem(item);
+  MakeItem("scratches", "Wall with scratches on it", {Action::kRead});
   // Key cutter
-  item = new Item("key cutter", {});
-  GetRoom("Locksmiths")->PutItem(item);
+  MakeItem("key cutter", "Locksmiths");
   // Hole
-  item = new Item("hole", {look_handler});
-  GetRoom("Area with a hole in the ceiling")->PutItem(item);
+  MakeItem("hole", "Area with a hole in the ceiling", {Action::kLook});
   // Transmitter
-  item = new Item("transmitter", {});
-  GetRoom("Signal transmitter room")->PutItem(item);
+  MakeItem("transmitter", "Signal transmitter room");
   // Window
-  item = new Item("window", {look_handler});
-  GetRoom("Observation point")->PutItem(item);
+  MakeItem("window", "Observation point", {Action::kLook});
   // Mud man
-  item = new Item("mud man", {kill_handler});
-  GetRoom("Muddy area")->PutItem(item);
+  MakeItem("mud man", "Muddy area", {Action::kKill});
   // Wire
-  item = new Item("wire", {});
-  GetRoom("Repairs room")->PutItem(item);
+  MakeItem("wire", "Repairs room");
   // Inscription
-  item = new Item("inscription", {read_handler});
-  GetRoom("Place beside a monolith")->PutItem(item);
+  MakeItem("inscription", "Place beside a monolith", {Action::kRead});
   // Boulders
-  item = new Item("boulders", {});
-  nowhere().PutItem(item);
+  MakeItem("boulders", "Nowhere");
   // Swarck
-  item = new Item("swarck", {say_handler});
-  nowhere().PutItem(item);
-
-  nothing().AddActionHandler(transmit_handler);
+  MakeItem("swarck", "Nowhere", {Action::kSay});
 }
 
 void Captive::AfterTurn() {
   turns_++;
-  Room* room = CurrentRoom();
-  std::string room_name = room->name();
 
   if (!running()) return;
 
-  if (room_name == "Muddy area" && !inventory().HasItem("sabre") &&
-      room->HasItem("mud man")) {
+  if (CurrentRoom()->Is("Muddy area") && !inventory().HasItem("sabre") &&
+      CurrentRoom()->HasItem("mud man")) {
     io()->WriteResponse("A mud-man has just killed you.");
     Over();
     return;
   }
-  if (room_name == "Dimly lit passage") {
+  if (CurrentRoom()->Is("Dimly lit passage")) {
     Item* torch = inventory().GetItem("torch");
     if (!torch || !torch->HasState(ItemState::kLit)) {
       io()->WriteResponse("You have fallen into a hole in the dim light.");
@@ -446,7 +410,8 @@ void Captive::AfterTurn() {
       return;
     }
   }
-  if (room_name == "Signal transmitter room" && transmitter_overheating_) {
+  if (CurrentRoom()->Is("Signal transmitter room") &&
+      transmitter_overheating_) {
     io()->WriteStatus("The transmitter is overheating.");
   }
   if (turns_ >= 20 && turns_ < 40) {

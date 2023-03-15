@@ -110,8 +110,57 @@ Item* Game::GetItem(const std::string& name) {
 }
 
 Room* Game::GetRoom(const std::string& name) {
+  if (nowhere().Is(name)) return &nowhere();
   auto r =
       std::find_if(rooms().begin(), rooms().end(),
                    [&name](const Room* room) { return room->name() == name; });
   return (r == rooms().end()) ? nullptr : *r;
+}
+
+Room* Game::MakeRoom(const std::string& name) {
+  Room* r = new Room(name);
+  rooms().push_back(r);
+  return r;
+}
+
+Item* Game::MakeItem(const std::string& name, const std::string& room,
+                     std::vector<Action> actions) {
+  std::vector<const ActionHandler*> h;
+  for (auto a : actions) {
+    for (auto hnd : handlers()) {
+      if (hnd.second->action() == a) {
+        h.push_back(hnd.second);
+        break;
+      }
+    }
+  }
+  Item* item = new Item(name, h);
+  if (room != "") {
+    GetRoom(room)->PutItem(item);
+  }
+  return item;
+}
+
+bool Game::DontHaveItem(Item* item) {
+  if (inventory().HasItem(item)) {
+    io()->WriteResponse({"You already have ", item->name(), "."});
+    return false;
+  }
+  return true;
+}
+
+bool Game::HaveItem(Item* item) {
+  if (!inventory().HasItem(item)) {
+    io()->WriteResponse({"You don't have ", item->name(), "."});
+    return false;
+  }
+  return true;
+}
+
+bool Game::ItemInCurrentRoom(Item* item) {
+  if (!CurrentRoom()->HasItem(item)) {
+    io()->WriteResponse({"I don't see ", item->name(), " here."});
+    return false;
+  }
+  return true;
 }
