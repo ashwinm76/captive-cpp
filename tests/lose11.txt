@@ -1,14 +1,20 @@
-# Test to win the game
+# Test to check that you can only read scratches or inscription
+read door
+:I can't do that.
 kick door
 :*
 n
 :*
 w
 :*
+read torch
+:I can't do that.
 get torch
 :*
 n
 :*
+read grenade
+:I can't do that.
 get grenade
 :*
 w
@@ -41,6 +47,8 @@ w
 :*
 w
 :*
+read magnifier
+:I can't do that.
 get magnifier
 :*
 e
@@ -55,6 +63,8 @@ w
 :*
 n
 :*
+read sabre
+:I can't do that.
 get sabre
 :*
 s
@@ -63,20 +73,30 @@ s
 :*
 s
 :*
+read mud man
+:I can't do that.
 kill mud man
 :*
 s
 :*
+read rough metal
+:I can't do that.
 cut rough metal
 :*
+read shiny key
+:I can't do that.
 get shiny key
 :*
 n
 :*
 e
 :*
+read gloves
+:I can't do that.
 wear gloves
 :*
+read ice block
+:I can't do that.
 get ice block
 :*
 w
@@ -97,6 +117,8 @@ w
 :*
 w
 :*
+read aerial
+:I can't do that.
 get aerial
 :*
 e
@@ -123,12 +145,18 @@ w
 :*
 n
 :*
+read window
+:I can't do that.
 look window
 :*
 e
 :*
+read locked door
+:I can't do that.
 open locked door
 :*
+read headphones
+:I can't do that.
 wear headphones
 :*
 throw grenade

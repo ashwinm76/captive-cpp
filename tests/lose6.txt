@@ -1,4 +1,4 @@
-# Test to open the airlock without transmitting first
+# Test to check that we can't carry the ice block without wearing gloves
 kick door
 :*
 n
@@ -75,55 +75,6 @@ n
 :*
 e
 :*
-wear gloves
-:*
+# wear gloves
 get ice block
-:*
-w
-:*
-n
-:*
-w
-:*
-drop ice block
-:*
-e
-:*
-n
-:*
-w
-:*
-w
-:*
-w
-:*
-get aerial
-:*
-e
-:*
-e
-:*
-e
-:*
-s
-:*
-w
-:*
-drop aerial
-:*
-e
-:*
-n
-:*
-w
-:*
-w
-:*
-n
-:*
-look window
-:*
-e
-:*
-open locked door
-:The air lock is disabled.
+:It is too cold to carry.

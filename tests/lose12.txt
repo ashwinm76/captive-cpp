@@ -1,18 +1,26 @@
-# Test to win the game
+# Test to check that you can only kill mud man
+kill door
+:I can't do that.
 kick door
 :*
 n
 :*
 w
 :*
+kill torch
+:I can't do that.
 get torch
 :*
 n
 :*
+kill grenade
+:I can't do that.
 get grenade
 :*
 w
 :*
+kill scratches
+:I can't do that.
 read scratches
 :*
 e
@@ -41,6 +49,8 @@ w
 :*
 w
 :*
+kill magnifier
+:I can't do that.
 get magnifier
 :*
 e
@@ -49,12 +59,16 @@ e
 :*
 e
 :*
+kill inscription
+:I can't do that.
 read inscription
 :*
 w
 :*
 n
 :*
+kill sabre
+:I can't do that.
 get sabre
 :*
 s
@@ -67,16 +81,24 @@ kill mud man
 :*
 s
 :*
+kill rough metal
+:I can't do that.
 cut rough metal
 :*
+kill shiny key
+:I can't do that.
 get shiny key
 :*
 n
 :*
 e
 :*
+kill gloves
+:I can't do that.
 wear gloves
 :*
+kill ice block
+:I can't do that.
 get ice block
 :*
 w
@@ -97,6 +119,8 @@ w
 :*
 w
 :*
+kill aerial
+:I can't do that.
 get aerial
 :*
 e
@@ -123,12 +147,18 @@ w
 :*
 n
 :*
+kill window
+:I can't do that.
 look window
 :*
 e
 :*
+kill locked door
+:I can't do that.
 open locked door
 :*
+kill headphones
+:I can't do that.
 wear headphones
 :*
 throw grenade

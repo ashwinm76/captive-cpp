@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 int main(int argc, char **argv) {
   std::vector<std::string> input;
-  std::string output;
+  std::vector<std::string> output;
   std::ifstream ifile;
 
   if (argc != 2) {
@@ -39,14 +39,14 @@ int main(int argc, char **argv) {
     std::string line;
     while (std::getline(ifile, line)) {
       if (line[0] != '#' && line.size() > 0) {
-        input.push_back(line);
+        if (line[0] != ':') {
+          input.push_back(line);
+        } else {
+          output.push_back(line.substr(1));
+        }
       }
     }
     ifile.close();
-    if (input.size() > 0) {
-      output = input.back();
-      input.pop_back();
-    }
   } else {
     std::cout << "Can't open " << argv[1] << std::endl;
     return 1;

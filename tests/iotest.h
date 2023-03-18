@@ -26,24 +26,26 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 class IoTest : public IoStd {
  public:
-  IoTest(std::vector<std::string> inputs, std::string output)
+  IoTest(std::vector<std::string> inputs, std::vector<std::string> outputs)
       : IoStd(80),
-        passed_(false),
+        passed_(true),
         inputs_(inputs),
-        output_(output),
+        outputs_(outputs),
         in_count_(0) {}
 
   bool passed() { return passed_; }
 
   void WriteResponse(const std::string& s) {
     std::cout << s << std::endl;
-    if (in_count_ == inputs_.size()) passed_ = (s == output_);
+    if (outputs_[in_count_-1] != "*" && passed_)
+      passed_ = (s == outputs_[in_count_-1]);
   }
 
   void WriteResponse(const std::list<const std::string>& m) {
     for (auto s : m) {
       std::cout << s;
-      if (in_count_ == inputs_.size()) passed_ = (s == output_);
+      if (outputs_[in_count_-1] != "*" && passed_)
+        passed_ = (s == outputs_[in_count_-1]);
     }
     std::cout << std::endl;
   }
@@ -64,7 +66,7 @@ class IoTest : public IoStd {
  private:
   bool passed_;
   std::vector<std::string> inputs_;
-  std::string output_;
+  std::vector<std::string> outputs_;
   int in_count_;
 };
 

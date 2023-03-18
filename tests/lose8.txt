@@ -1,18 +1,26 @@
-# Test to win the game
+# Test to check that you can only wear headphones or gloves
+wear door
+:I can't do that.
 kick door
 :*
 n
 :*
 w
 :*
+wear torch
+:I can't do that.
 get torch
 :*
 n
 :*
+wear grenade
+:I can't do that.
 get grenade
 :*
 w
 :*
+wear scratches
+:I can't do that.
 read scratches
 :*
 e
@@ -41,6 +49,8 @@ w
 :*
 w
 :*
+wear magnifier
+:I can't do that.
 get magnifier
 :*
 e
@@ -49,12 +59,16 @@ e
 :*
 e
 :*
+wear inscription
+:I can't do that.
 read inscription
 :*
 w
 :*
 n
 :*
+wear sabre
+:I can't do that.
 get sabre
 :*
 s
@@ -63,12 +77,18 @@ s
 :*
 s
 :*
+wear mud man
+:I can't do that.
 kill mud man
 :*
 s
 :*
+wear rough metal
+:I can't do that.
 cut rough metal
 :*
+wear shiny key
+:I can't do that.
 get shiny key
 :*
 n
@@ -77,6 +97,8 @@ e
 :*
 wear gloves
 :*
+wear ice block
+:I can't do that.
 get ice block
 :*
 w
@@ -97,6 +119,8 @@ w
 :*
 w
 :*
+wear aerial
+:I can't do that.
 get aerial
 :*
 e
@@ -123,10 +147,14 @@ w
 :*
 n
 :*
+wear window
+:I can't do that.
 look window
 :*
 e
 :*
+wear locked door
+:I can't do that.
 open locked door
 :*
 wear headphones

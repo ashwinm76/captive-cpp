@@ -1,18 +1,24 @@
-# Test to win the game
+# Test to check that you can only kick door
 kick door
 :*
 n
 :*
 w
 :*
+kick torch
+:I can't do that.
 get torch
 :*
 n
 :*
+kick grenade
+:I can't do that.
 get grenade
 :*
 w
 :*
+kick scratches
+:I can't do that.
 read scratches
 :*
 e
@@ -41,6 +47,8 @@ w
 :*
 w
 :*
+kick magnifier
+:I can't do that.
 get magnifier
 :*
 e
@@ -49,12 +57,16 @@ e
 :*
 e
 :*
+kick inscription
+:I can't do that.
 read inscription
 :*
 w
 :*
 n
 :*
+kick sabre
+:I can't do that.
 get sabre
 :*
 s
@@ -63,20 +75,30 @@ s
 :*
 s
 :*
+kick mud man
+:I can't do that.
 kill mud man
 :*
 s
 :*
+kick rough metal
+:I can't do that.
 cut rough metal
 :*
+kick shiny key
+:I can't do that.
 get shiny key
 :*
 n
 :*
 e
 :*
+kick gloves
+:I can't do that.
 wear gloves
 :*
+kick ice block
+:I can't do that.
 get ice block
 :*
 w
@@ -97,6 +119,8 @@ w
 :*
 w
 :*
+kick aerial
+:I can't do that.
 get aerial
 :*
 e
@@ -123,12 +147,18 @@ w
 :*
 n
 :*
+kick window
+:I can't do that.
 look window
 :*
 e
 :*
+kick locked door
+:I can't do that.
 open locked door
 :*
+kick headphones
+:I can't do that.
 wear headphones
 :*
 throw grenade

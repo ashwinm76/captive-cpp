@@ -1,30 +1,42 @@
-# Test to win the game
+# Test to check that you can only cut rough metal
+cut door
+:I can't do that.
 kick door
 :*
 n
 :*
 w
 :*
+cut torch
+:I can't do that.
 get torch
 :*
 n
 :*
+cut grenade
+:I can't do that.
 get grenade
 :*
 w
 :*
+cut scratches
+:I can't do that.
 read scratches
 :*
 e
 :*
 e
 :*
+cut gloves
+:I can't do that.
 get gloves
 :*
 n
 :*
 w
 :*
+cut headphones
+:I can't do that.
 get headphones
 :*
 e
@@ -41,6 +53,8 @@ w
 :*
 w
 :*
+cut magnifier
+:I can't do that.
 get magnifier
 :*
 e
@@ -49,12 +63,16 @@ e
 :*
 e
 :*
+cut inscription
+:I can't do that.
 read inscription
 :*
 w
 :*
 n
 :*
+cut sabre
+:I can't do that.
 get sabre
 :*
 s
@@ -63,12 +81,16 @@ s
 :*
 s
 :*
+cut mud man
+:I can't do that.
 kill mud man
 :*
 s
 :*
 cut rough metal
 :*
+cut shiny key
+:I can't do that.
 get shiny key
 :*
 n
@@ -77,6 +99,8 @@ e
 :*
 wear gloves
 :*
+cut ice block
+:I can't do that.
 get ice block
 :*
 w
@@ -97,6 +121,8 @@ w
 :*
 w
 :*
+cut aerial
+:I can't do that.
 get aerial
 :*
 e
@@ -123,10 +149,14 @@ w
 :*
 n
 :*
+cut window
+:I can't do that.
 look window
 :*
 e
 :*
+cut locked door
+:I can't do that.
 open locked door
 :*
 wear headphones

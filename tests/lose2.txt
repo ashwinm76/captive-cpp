@@ -1,68 +1,133 @@
 # Test to throw the grenade without opening the airlock first
 kick door
+:*
 n
+:*
 w
+:*
 get torch
+:*
 n
+:*
 get grenade
+:*
 w
+:*
 read scratches
+:*
 e
+:*
 e
+:*
 get gloves
+:*
 n
+:*
 w
+:*
 get headphones
+:*
 e
+:*
 e
+:*
 get rough metal
+:*
 n
+:*
 light torch
+:*
 w
+:*
 w
+:*
 get magnifier
+:*
 e
+:*
 e
+:*
 e
+:*
 read inscription
+:*
 w
+:*
 n
+:*
 get sabre
+:*
 s
+:*
 s
+:*
 s
+:*
 kill mud man
+:*
 s
+:*
 cut rough metal
+:*
 get shiny key
+:*
 n
+:*
 e
+:*
 wear gloves
+:*
 get ice block
+:*
 w
+:*
 n
+:*
 w
+:*
 drop ice block
+:*
 e
+:*
 n
+:*
 w
+:*
 w
+:*
 w
+:*
 get aerial
+:*
 e
+:*
 e
+:*
 e
+:*
 s
+:*
 w
+:*
 drop aerial
+:*
 transmit
+:*
 e
+:*
 n
+:*
 w
+:*
 w
+:*
 n
+:*
 look window
+:*
 e
+:*
 wear headphones
+:*
 throw grenade
-That would not achieve anything.
+:That would not achieve anything.
