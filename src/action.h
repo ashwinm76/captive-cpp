@@ -48,6 +48,20 @@ enum class Action {
   kOpen
 };
 
+class ActionCondition {
+ public:
+  ActionCondition(const std::string& err_msg,
+                  std::function<bool(Game*, Item*)> cond_fn)
+      : err_msg_(err_msg), condfn_(cond_fn) {}
+
+  std::string err_msg() const { return err_msg_; }
+  bool operator()(Game* game, Item* item) { return condfn_(game, item); }
+
+ private:
+  std::string err_msg_;
+  std::function<bool(Game*, Item*)> condfn_;
+};
+
 /* The action handler acts on an Item (without modifying it) and can change
    the Game state. */
 class ActionHandler {
@@ -56,14 +70,29 @@ class ActionHandler {
                 std::function<void(Game*, Item*)> handler)
       : action_(action), game_(game), handler_(handler) {}
 
-  void operator()(Item* item) const { handler_(game_, item); }
+  bool operator()(Item* item) {
+    for (auto c : conditions_) {
+      if (!c(game_, item)) {
+        msg_ = c.err_msg();
+        return false;
+      }
+    }
+    handler_(game_, item);
+    return true;
+  }
 
   Action action() const { return action_; }
+
+  std::string msg() const { return msg_; }
+
+  void AddCondition(ActionCondition ac) { conditions_.push_back(ac); }
 
  private:
   Action action_;
   Game* game_;
+  std::string msg_;
   std::function<void(Game*, Item*)> handler_;
+  std::vector<ActionCondition> conditions_;
 };
 
 #endif

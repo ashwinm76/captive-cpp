@@ -76,8 +76,10 @@ void Game::Run() {
         if (!item) {
           item = &nothing_;
         }
-        if (!item->HandleAction(cmd_.action())) {
+        if (!item->CanHandleAction(cmd_.action())) {
           io_->WriteResponse("I can't do that.");
+        } else if (!item->HandleAction(cmd_.action())) {
+          io_->WriteResponse(item->msg());
         }
         break;
       }
@@ -103,14 +105,10 @@ Direction Game::MakeDirection(const Command cmd) const {
 }
 
 Item* Game::GetItem(const std::string& name) {
-  Item* i = CurrentRoom()->GetItem(name);
-  if (!i) {
-    i = inventory_.GetItem(name);
-  }
-  if (!i) {
-    i = nowhere_.GetItem(name);
-  }
-  return i;
+  auto i =
+      std::find_if(items_.begin(), items_.end(),
+                   [&name](const Item* item) { return item->name() == name; });
+  return (i == items_.end()) ? nullptr : *i;
 }
 
 Room* Game::GetRoom(const std::string& name) {
@@ -129,7 +127,7 @@ Room* Game::MakeRoom(const std::string& name) {
 
 Item* Game::MakeItem(const std::string& name, const std::string& room,
                      std::vector<Action> actions) {
-  std::vector<const ActionHandler*> h;
+  std::vector<ActionHandler*> h;
   for (auto a : actions) {
     for (auto hnd : handlers()) {
       if (hnd.second->action() == a) {
@@ -142,6 +140,7 @@ Item* Game::MakeItem(const std::string& name, const std::string& room,
   if (room != "") {
     GetRoom(room)->PutItem(item);
   }
+  items_.push_back(item);
   return item;
 }
 

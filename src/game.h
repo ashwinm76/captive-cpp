@@ -89,6 +89,7 @@ class Game {
   Room* starting_room_;
   Command cmd_;
   std::vector<Room*> rooms_;
+  std::vector<Item*> items_;
   Room inventory_;
   Room nowhere_;
   Item nothing_;

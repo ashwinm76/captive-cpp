@@ -1,0 +1,170 @@
+# Test to fail getting things you already have
+kick door
+:*
+n
+:*
+w
+:*
+get torch
+:*
+get torch
+:You already have it.
+n
+:*
+get grenade
+:*
+get grenade
+:You already have it.
+w
+:*
+read scratches
+:*
+e
+:*
+e
+:*
+get gloves
+:*
+get gloves
+:You already have it.
+n
+:*
+:The transmitter is overheating.
+w
+:*
+:The transmitter is overheating.
+get headphones
+:*
+get headphones
+:You already have it.
+e
+:*
+:The transmitter is overheating.
+e
+:*
+:The transmitter is overheating.
+get rough metal
+:*
+get rough metal
+:You already have it.
+:*
+n
+:*
+light torch
+:*
+w
+:*
+w
+:*
+get magnifier
+:*
+get magnifier
+:You already have it.
+:*
+e
+:*
+e
+:*
+e
+:*
+read inscription
+:*
+w
+:*
+n
+:*
+get sabre
+:*
+get sabre
+:You already have it.
+:*
+s
+:*
+s
+:*
+s
+:*
+kill mud man
+:*
+s
+:*
+cut rough metal
+:*
+get shiny key
+:*
+get shiny key
+:You already have it.
+:*
+n
+:*
+e
+:*
+wear gloves
+:*
+get ice block
+:*
+get ice block
+:You already have it.
+:*
+w
+:*
+n
+:*
+w
+:*
+:The transmitter is overheating.
+drop ice block
+:*
+e
+:*
+n
+:*
+w
+:*
+w
+:*
+w
+:*
+get aerial
+:*
+get aerial
+:You already have it.
+:*
+e
+:*
+e
+:*
+e
+:*
+s
+:*
+w
+:*
+drop aerial
+:*
+transmit
+:*
+e
+:*
+n
+:*
+w
+:*
+w
+:*
+n
+:*
+look window
+:*
+e
+:*
+open locked door
+:*
+wear headphones
+:*
+throw grenade
+:*
+n
+:*
+say swarck
+:You have materialised inside your ship which has immediately taken off.

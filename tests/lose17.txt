@@ -1,0 +1,76 @@
+# Test to be unable to cut rough metal when you dont have it
+kick door
+:*
+n
+:*
+w
+:*
+get torch
+:*
+n
+:*
+get grenade
+:*
+w
+:*
+read scratches
+:*
+e
+:*
+e
+:*
+get gloves
+:*
+n
+:*
+:The transmitter is overheating.
+w
+:*
+:The transmitter is overheating.
+get headphones
+:*
+e
+:*
+:The transmitter is overheating.
+e
+:*
+:The transmitter is overheating.
+#get rough metal
+#:*
+n
+:*
+light torch
+:*
+w
+:*
+w
+:*
+get magnifier
+:*
+e
+:*
+e
+:*
+e
+:*
+read inscription
+:*
+w
+:*
+n
+:*
+get sabre
+:*
+s
+:*
+s
+:*
+s
+:*
+kill mud man
+:*
+s
+:*
+cut rough metal
+:You don't have it.
+:*

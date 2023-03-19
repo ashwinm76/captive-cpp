@@ -1,0 +1,197 @@
+# Test to fail dropping or throwing or wearing or lighting or kicking or ringing
+# or reading or looking at or killing or opening things you don't have
+kick door
+:*
+ring bell
+:I don't see it here.
+read scratches
+:I don't see it here.
+read inscription
+:I don't see it here.
+drop torch
+:You don't have it.
+light torch
+:You don't have it.
+drop grenade
+:You don't have it.
+throw grenade
+:You don't have it.
+drop gloves
+:You don't have it.
+wear gloves
+:You don't have it.
+drop headphones
+:You don't have it.
+wear headphones
+:You don't have it.
+drop rough metal
+:You don't have it.
+drop shiny key
+:You don't have it.
+drop aerial
+:You don't have it.
+drop ice block
+:You don't have it.
+drop magnifier
+:You don't have it.
+drop sabre
+:You don't have it.
+n
+:*
+kick door
+:I don't see it here.
+:*
+w
+:*
+get torch
+:*
+n
+:*
+get grenade
+:*
+w
+:*
+read scratches
+:*
+e
+:*
+e
+:*
+get gloves
+:*
+n
+:*
+:The transmitter is overheating.
+w
+:*
+:The transmitter is overheating.
+get headphones
+:*
+e
+:*
+:The transmitter is overheating.
+e
+:*
+:The transmitter is overheating.
+get rough metal
+:*
+n
+:*
+light torch
+:*
+w
+:*
+w
+:*
+get magnifier
+:*
+e
+:*
+e
+:*
+e
+:*
+read inscription
+:*
+w
+:*
+n
+:*
+get sabre
+:*
+s
+:*
+s
+:*
+s
+:*
+kill mud man
+:*
+s
+:*
+cut rough metal
+:*
+get shiny key
+:*
+n
+:*
+e
+:*
+wear gloves
+:*
+get ice block
+:*
+w
+:*
+n
+:*
+w
+:*
+:The transmitter is overheating.
+drop ice block
+:*
+look hole
+:I don't see it here.
+:*
+look window
+:I don't see it here.
+:*
+kill mud man
+:I don't see it here.
+:*
+open door
+:I don't see it here.
+:*
+open locked door
+:I don't see it here.
+:*
+e
+:*
+n
+:*
+w
+:*
+w
+:*
+w
+:*
+get aerial
+:*
+e
+:*
+e
+:*
+e
+:*
+s
+:*
+w
+:*
+drop aerial
+:*
+transmit
+:*
+e
+:*
+n
+:*
+w
+:*
+w
+:*
+n
+:*
+look window
+:*
+e
+:*
+open locked door
+:*
+wear headphones
+:*
+throw grenade
+:*
+n
+:*
+say swarck
+:You have materialised inside your ship which has immediately taken off.
