@@ -23,14 +23,18 @@ get gloves
 :*
 n
 :*
+:The transmitter is overheating.
 w
 :*
+:The transmitter is overheating.
 get headphones
 :*
 e
 :*
+:The transmitter is overheating.
 e
 :*
+:The transmitter is overheating.
 get rough metal
 :*
 n
@@ -85,6 +89,7 @@ n
 :*
 w
 :*
+:The transmitter is overheating.
 drop ice block
 :*
 e

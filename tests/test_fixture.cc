@@ -25,8 +25,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "iotest.h"
 
 int main(int argc, char **argv) {
-  std::vector<std::string> input;
-  std::vector<std::string> output;
   std::ifstream ifile;
 
   if (argc != 2) {
@@ -35,16 +33,26 @@ int main(int argc, char **argv) {
   }
 
   ifile.open(argv[1]);
+  std::vector<std::pair<std::string, std::vector<std::string> > > expects;
+  std::pair<std::string, std::vector<std::string> > expect;
   if (ifile.is_open()) {
     std::string line;
     while (std::getline(ifile, line)) {
       if (line[0] != '#' && line.size() > 0) {
-        if (line[0] != ':') {
-          input.push_back(line);
+        if (line[0] == ':') {
+          expect.second.push_back(line.substr(1));
         } else {
-          output.push_back(line.substr(1));
+          if (expect.first != "") {
+            expects.push_back(expect);
+            expect.first = "";
+            expect.second.clear();
+          }
+          expect.first = line;
         }
       }
+    }
+    if (expect.first != "") {
+      expects.push_back(expect);
     }
     ifile.close();
   } else {
@@ -52,7 +60,7 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  IoTest io(input, output);
+  IoTest io(expects);
   Captive captive(&io);
 
   captive.Run();

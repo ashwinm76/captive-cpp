@@ -42,6 +42,7 @@ void Captive::Run() {
 }
 
 void Captive::CreateRooms() {
+  // Make rooms
   Room* prison_cell = MakeRoom("Prison cell");
   Room* bell_tower = MakeRoom("Bell tower");
   Room* winding_staircase = MakeRoom("Winding staircase");
@@ -64,6 +65,7 @@ void Captive::CreateRooms() {
   Room* air_lock = MakeRoom("Air lock");
   Room* outside = MakeRoom("Outside of ship");
 
+  // Connect rooms
   prison_cell->ConnectRoom(bell_tower, Direction::kNorth, false);
   bell_tower->ConnectRoom(winding_staircase, Direction::kWest);
   winding_staircase->ConnectRoom(gunpowder_chamber, Direction::kNorth);
@@ -84,6 +86,34 @@ void Captive::CreateRooms() {
   bright_room->ConnectRoom(observation_room, Direction::kNorth);
   observation_room->ConnectRoom(air_lock, Direction::kEast);
   air_lock->ConnectRoom(outside, Direction::kNorth, false);
+
+  // Add room event handlers
+  auto fn = [](Game* game, Room* room) {
+    Captive* captive = dynamic_cast<Captive*>(game);
+    if (captive->transmitter_overheating()) {
+      game->io()->WriteStatus("The transmitter is overheating.");
+    }
+  };
+  transmitter_room->OnTurn(fn);
+  transmitter_room->OnEnter(fn);
+
+  muddy_area->OnEnter([](Game* game, Room* room) {
+    if (!game->inventory().HasItem("sabre") && room->HasItem("mud man")) {
+      game->io()->WriteResponse("A mud-man has just killed you.");
+      game->Over();
+      return;
+    }
+  });
+
+  dim_passage->OnEnter([](Game* game, Room* room) {
+    Item* torch = game->inventory().GetItem("torch");
+    if (!torch || !torch->HasState(ItemState::kLit)) {
+      game->io()->WriteResponse(
+          "You have fallen into a hole in the dim light.");
+      game->Over();
+      return;
+    }
+  });
 
   StartingRoom(prison_cell);
 }
@@ -371,24 +401,6 @@ void Captive::AfterTurn() {
 
   if (!running()) return;
 
-  if (CurrentRoom()->Is("Muddy area") && !inventory().HasItem("sabre") &&
-      CurrentRoom()->HasItem("mud man")) {
-    io()->WriteResponse("A mud-man has just killed you.");
-    Over();
-    return;
-  }
-  if (CurrentRoom()->Is("Dimly lit passage")) {
-    Item* torch = inventory().GetItem("torch");
-    if (!torch || !torch->HasState(ItemState::kLit)) {
-      io()->WriteResponse("You have fallen into a hole in the dim light.");
-      Over();
-      return;
-    }
-  }
-  if (CurrentRoom()->Is("Signal transmitter room") &&
-      transmitter_overheating_) {
-    io()->WriteStatus("The transmitter is overheating.");
-  }
   if (turns_ >= 20 && turns_ < 40) {
     io()->WriteStatus("A rumbling sound can be heard.");
   } else if (turns_ >= 40 && turns_ < 60) {

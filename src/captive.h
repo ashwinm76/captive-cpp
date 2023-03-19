@@ -27,6 +27,7 @@ class Captive : public Game {
  public:
   Captive(Io* io);
   void Run();
+  bool transmitter_overheating() { return transmitter_overheating_; }
 
  protected:
   void CreateRooms();

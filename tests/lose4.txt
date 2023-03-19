@@ -127,3 +127,4 @@ e
 :*
 open locked door
 :The air lock is disabled.
+:*

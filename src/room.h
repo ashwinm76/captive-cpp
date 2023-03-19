@@ -23,7 +23,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <algorithm>
 #include <array>
 #include <string>
+#include <functional>
 
+#include "game.h"
 #include "common.h"
 
 class Item;
@@ -37,6 +39,10 @@ class Room {
 
   Room(const std::string& name) : name_(name) {
     for (auto d : connections_) d.enabled = false;
+    std::function<void(Game*, Room*)> fn = [](Game* g, Room* r) { };
+    enter_handler_ = fn;
+    exit_handler_ = fn;
+    turn_handler_ = fn;
   }
 
   std::string name() const { return name_; }
@@ -119,12 +125,31 @@ class Room {
     return (i == items_.end()) ? nullptr : *i;
   }
 
+  void OnEnter(std::function<void(Game*, Room*)> handler) {
+    enter_handler_ = handler;
+  }
+
+  void OnExit(std::function<void(Game*, Room*)> handler) {
+    exit_handler_ = handler;
+  }
+
+  void OnTurn(std::function<void(Game*, Room*)> handler) {
+    turn_handler_ = handler;
+  }
+
+  void Enter(Game* game) { enter_handler_(game, this); }
+  void Exit(Game* game) { exit_handler_(game, this); }
+  void Turn(Game* game) { turn_handler_(game, this); }
+
   std::vector<Item*> items() const { return items_; }
 
  private:
   std::string name_;
   std::array<Door, 4> connections_;
   std::vector<Item*> items_;
+  std::function<void(Game*, Room*)> enter_handler_;
+  std::function<void(Game*, Room*)> exit_handler_;
+  std::function<void(Game*, Room*)> turn_handler_;
 };
 
 #endif

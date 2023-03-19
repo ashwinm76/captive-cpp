@@ -51,6 +51,7 @@ w
 :*
 wear magnifier
 :I can't do that.
+:*
 get magnifier
 :*
 e
@@ -61,6 +62,7 @@ e
 :*
 wear inscription
 :I can't do that.
+:*
 read inscription
 :*
 w
@@ -69,6 +71,7 @@ n
 :*
 wear sabre
 :I can't do that.
+:*
 get sabre
 :*
 s
@@ -79,16 +82,19 @@ s
 :*
 wear mud man
 :I can't do that.
+:*
 kill mud man
 :*
 s
 :*
 wear rough metal
 :I can't do that.
+:*
 cut rough metal
 :*
 wear shiny key
 :I can't do that.
+:*
 get shiny key
 :*
 n
@@ -99,6 +105,7 @@ wear gloves
 :*
 wear ice block
 :I can't do that.
+:*
 get ice block
 :*
 w
@@ -121,6 +128,7 @@ w
 :*
 wear aerial
 :I can't do that.
+:*
 get aerial
 :*
 e
@@ -149,12 +157,14 @@ n
 :*
 wear window
 :I can't do that.
+:*
 look window
 :*
 e
 :*
 wear locked door
 :I can't do that.
+:*
 open locked door
 :*
 wear headphones

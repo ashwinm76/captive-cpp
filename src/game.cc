@@ -43,21 +43,24 @@ void Game::Run() {
   CreateItems();
 
   current_room_ = starting_room_;
+  current_room_->Enter(this);
   running_ = true;
 
   while (running_) {
     std::string input;
-    Room* current_room = CurrentRoom();
     io_->WriteRoomInfo(this);
     input = io_->ReadCommand("Command? ");
     cmd_.Parse(input);
 
     Direction dir = MakeDirection(cmd_);
     if (dir != Direction::kNone) {
-      if (!current_room->HasExit(dir)) {
+      if (!current_room_->HasExit(dir)) {
         io_->WriteResponse("No Exit!");
       } else {
+        current_room_->Turn(this);
+        current_room_->Exit(this);
         current_room_ = current_room_->GetConnectedRoom(dir);
+        current_room_->Enter(this);
       }
       AfterTurn();
       continue;
@@ -79,6 +82,7 @@ void Game::Run() {
         break;
       }
     }
+    current_room_->Turn(this);
     AfterTurn();
   }
 }

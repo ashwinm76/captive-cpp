@@ -77,3 +77,4 @@ e
 # wear gloves
 get ice block
 :It is too cold to carry.
+:*

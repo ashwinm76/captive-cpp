@@ -55,6 +55,7 @@ w
 :*
 cut magnifier
 :I can't do that.
+:*
 get magnifier
 :*
 e
@@ -65,6 +66,7 @@ e
 :*
 cut inscription
 :I can't do that.
+:*
 read inscription
 :*
 w
@@ -73,6 +75,7 @@ n
 :*
 cut sabre
 :I can't do that.
+:*
 get sabre
 :*
 s
@@ -83,6 +86,7 @@ s
 :*
 cut mud man
 :I can't do that.
+:*
 kill mud man
 :*
 s
@@ -91,6 +95,7 @@ cut rough metal
 :*
 cut shiny key
 :I can't do that.
+:*
 get shiny key
 :*
 n
@@ -101,6 +106,7 @@ wear gloves
 :*
 cut ice block
 :I can't do that.
+:*
 get ice block
 :*
 w
@@ -123,6 +129,7 @@ w
 :*
 cut aerial
 :I can't do that.
+:*
 get aerial
 :*
 e
@@ -151,12 +158,14 @@ n
 :*
 cut window
 :I can't do that.
+:*
 look window
 :*
 e
 :*
 cut locked door
 :I can't do that.
+:*
 open locked door
 :*
 wear headphones

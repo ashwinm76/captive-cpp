@@ -51,6 +51,7 @@ w
 :*
 ring magnifier
 :I can't do that.
+:*
 get magnifier
 :*
 e
@@ -61,6 +62,7 @@ e
 :*
 ring inscription
 :I can't do that.
+:*
 read inscription
 :*
 w
@@ -69,6 +71,7 @@ n
 :*
 ring sabre
 :I can't do that.
+:*
 get sabre
 :*
 s
@@ -79,16 +82,19 @@ s
 :*
 ring mud man
 :I can't do that.
+:*
 kill mud man
 :*
 s
 :*
 ring rough metal
 :I can't do that.
+:*
 cut rough metal
 :*
 ring shiny key
 :I can't do that.
+:*
 get shiny key
 :*
 n
@@ -97,10 +103,12 @@ e
 :*
 ring gloves
 :I can't do that.
+:*
 wear gloves
 :*
 ring ice block
 :I can't do that.
+:*
 get ice block
 :*
 w
@@ -123,6 +131,7 @@ w
 :*
 ring aerial
 :I can't do that.
+:*
 get aerial
 :*
 e
@@ -151,16 +160,19 @@ n
 :*
 ring window
 :I can't do that.
+:*
 look window
 :*
 e
 :*
 ring locked door
 :I can't do that.
+:*
 open locked door
 :*
 ring headphones
 :I can't do that.
+:*
 wear headphones
 :*
 throw grenade

@@ -131,3 +131,4 @@ wear headphones
 :*
 throw grenade
 :That would not achieve anything.
+:*

@@ -1,4 +1,4 @@
-# Test to check that we can't carry the ice block without wearing gloves
+# Test to get killed by the mud man
 kick door
 :*
 n
@@ -23,14 +23,18 @@ get gloves
 :*
 n
 :*
+:The transmitter is overheating.
 w
 :*
+:The transmitter is overheating.
 get headphones
 :*
 e
 :*
+:The transmitter is overheating.
 e
 :*
+:The transmitter is overheating.
 get rough metal
 :*
 n
@@ -55,27 +59,11 @@ w
 :*
 n
 :*
-get sabre
-:*
+#get sabre
+#:*
 s
 :*
 s
 :*
 s
-:*
-kill mud man
-:*
-s
-:*
-cut rough metal
-:*
-get shiny key
-:*
-n
-:*
-e
-:*
-# wear gloves
-get ice block
-:It is too cold to carry.
-:*
+:A mud-man has just killed you.

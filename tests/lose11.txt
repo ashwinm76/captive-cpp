@@ -49,6 +49,7 @@ w
 :*
 read magnifier
 :I can't do that.
+:*
 get magnifier
 :*
 e
@@ -65,6 +66,7 @@ n
 :*
 read sabre
 :I can't do that.
+:*
 get sabre
 :*
 s
@@ -75,16 +77,19 @@ s
 :*
 read mud man
 :I can't do that.
+:*
 kill mud man
 :*
 s
 :*
 read rough metal
 :I can't do that.
+:*
 cut rough metal
 :*
 read shiny key
 :I can't do that.
+:*
 get shiny key
 :*
 n
@@ -93,10 +98,12 @@ e
 :*
 read gloves
 :I can't do that.
+:*
 wear gloves
 :*
 read ice block
 :I can't do that.
+:*
 get ice block
 :*
 w
@@ -119,6 +126,7 @@ w
 :*
 read aerial
 :I can't do that.
+:*
 get aerial
 :*
 e
@@ -147,16 +155,19 @@ n
 :*
 read window
 :I can't do that.
+:*
 look window
 :*
 e
 :*
 read locked door
 :I can't do that.
+:*
 open locked door
 :*
 read headphones
 :I can't do that.
+:*
 wear headphones
 :*
 throw grenade

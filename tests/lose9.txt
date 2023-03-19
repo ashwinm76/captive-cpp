@@ -49,6 +49,7 @@ w
 :*
 kick magnifier
 :I can't do that.
+:*
 get magnifier
 :*
 e
@@ -59,6 +60,7 @@ e
 :*
 kick inscription
 :I can't do that.
+:*
 read inscription
 :*
 w
@@ -67,6 +69,7 @@ n
 :*
 kick sabre
 :I can't do that.
+:*
 get sabre
 :*
 s
@@ -77,16 +80,19 @@ s
 :*
 kick mud man
 :I can't do that.
+:*
 kill mud man
 :*
 s
 :*
 kick rough metal
 :I can't do that.
+:*
 cut rough metal
 :*
 kick shiny key
 :I can't do that.
+:*
 get shiny key
 :*
 n
@@ -95,10 +101,12 @@ e
 :*
 kick gloves
 :I can't do that.
+:*
 wear gloves
 :*
 kick ice block
 :I can't do that.
+:*
 get ice block
 :*
 w
@@ -121,6 +129,7 @@ w
 :*
 kick aerial
 :I can't do that.
+:*
 get aerial
 :*
 e
@@ -149,16 +158,19 @@ n
 :*
 kick window
 :I can't do that.
+:*
 look window
 :*
 e
 :*
 kick locked door
 :I can't do that.
+:*
 open locked door
 :*
 kick headphones
 :I can't do that.
+:*
 wear headphones
 :*
 throw grenade

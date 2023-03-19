@@ -1,0 +1,45 @@
+# Test to get killed in the dim passage without a lit torch
+kick door
+:*
+n
+:*
+w
+:*
+get torch
+:*
+n
+:*
+get grenade
+:*
+w
+:*
+read scratches
+:*
+e
+:*
+e
+:*
+get gloves
+:*
+n
+:*
+:The transmitter is overheating.
+w
+:*
+:The transmitter is overheating.
+get headphones
+:*
+e
+:*
+:The transmitter is overheating.
+e
+:*
+:The transmitter is overheating.
+get rough metal
+:*
+n
+:*
+#light torch
+#:*
+w
+:You have fallen into a hole in the dim light.
