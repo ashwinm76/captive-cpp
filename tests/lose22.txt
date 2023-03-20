@@ -1,0 +1,58 @@
+# Test to only read the inscription with the magnifier
+kick door
+:*
+n
+:*
+w
+:*
+get torch
+:*
+n
+:*
+get grenade
+:*
+w
+:*
+read scratches
+:*
+e
+:*
+e
+:*
+get gloves
+:*
+n
+:*
+:The transmitter is overheating.
+w
+:*
+:The transmitter is overheating.
+get headphones
+:*
+e
+:*
+:The transmitter is overheating.
+e
+:*
+:The transmitter is overheating.
+get rough metal
+:*
+n
+:*
+light torch
+:*
+w
+:*
+w
+:*
+#get magnifier
+#:*
+e
+:*
+e
+:*
+e
+:*
+read inscription
+:The writing is too small to read.
+:*

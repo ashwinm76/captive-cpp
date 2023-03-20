@@ -1,0 +1,42 @@
+# Test to only cut the rough metal at the locksmiths
+kick door
+:*
+n
+:*
+w
+:*
+get torch
+:*
+n
+:*
+get grenade
+:*
+w
+:*
+read scratches
+:*
+e
+:*
+e
+:*
+get gloves
+:*
+n
+:*
+:The transmitter is overheating.
+w
+:*
+:The transmitter is overheating.
+get headphones
+:*
+e
+:*
+:The transmitter is overheating.
+e
+:*
+:The transmitter is overheating.
+get rough metal
+:*
+cut rough metal
+:I see no place where it can be cut.
+:*

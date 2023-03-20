@@ -23,6 +23,6 @@ target_link_libraries(test_fixture ${CMAKE_PROJECT_NAME}_lib)
 
 add_test(NAME TestWin1 COMMAND test_fixture ${CMAKE_CURRENT_LIST_DIR}/win1.txt)
 
-foreach(X RANGE 1 20)
+foreach(X RANGE 1 25)
   add_test(NAME TestLose${X} COMMAND test_fixture ${CMAKE_CURRENT_LIST_DIR}/lose${X}.txt)
 endforeach()

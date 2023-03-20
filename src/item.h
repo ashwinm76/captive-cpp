@@ -23,6 +23,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "action.h"
 
@@ -43,6 +44,8 @@ class Item {
     action_handlers_.push_back(handler);
   }
 
+  void AddCondition(Action a, ActionCondition ac) { conditions_[a].push_back(ac); }
+
   bool CanHandleAction(Action action) {
     auto a = std::find_if(action_handlers_.begin(), action_handlers_.end(),
                           [action](const ActionHandler* act) {
@@ -57,9 +60,17 @@ class Item {
                             return (act->action() == action);
                           });
     if (a != action_handlers_.end()) {
-      bool ret = (*a)->operator()(this);
-      if (!ret) msg_ = (*a)->msg();
-      return ret;
+      if (!(*a)->CanDo(this)) {
+        msg_ = (*a)->msg();
+        return false;
+      }
+      for(auto c: conditions_[(*a)->action()]) {
+        if (!c(this)) {
+          msg_ = c.err_msg();
+          return false;
+        }
+      }
+      return (*a)->operator()(this);
     } else {
       return false;
     }
@@ -76,6 +87,7 @@ class Item {
   std::string name_;
   std::vector<ActionHandler*> action_handlers_;
   std::string msg_;
+  std::map<Action, std::vector<ActionCondition> > conditions_;
 };
 
 #endif

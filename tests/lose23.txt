@@ -1,0 +1,151 @@
+# Test to check that swarck only works outside the ship
+kick door
+:*
+say swarck
+:Nothing happens.
+n
+:*
+w
+:*
+get torch
+:*
+n
+:*
+get grenade
+:*
+w
+:*
+read scratches
+:*
+say swarck
+:Nothing happens.
+e
+:*
+e
+:*
+get gloves
+:*
+n
+:*
+:The transmitter is overheating.
+w
+:*
+:The transmitter is overheating.
+get headphones
+:*
+e
+:*
+:The transmitter is overheating.
+e
+:*
+:The transmitter is overheating.
+get rough metal
+:*
+n
+:*
+light torch
+:*
+w
+:*
+w
+:*
+get magnifier
+:*
+e
+:*
+e
+:*
+e
+:*
+read inscription
+:*
+say swarck
+:Nothing happens.
+:*
+w
+:*
+n
+:*
+get sabre
+:*
+s
+:*
+s
+:*
+s
+:*
+kill mud man
+:*
+s
+:*
+cut rough metal
+:*
+get shiny key
+:*
+n
+:*
+e
+:*
+wear gloves
+:*
+get ice block
+:*
+w
+:*
+n
+:*
+w
+:*
+:The transmitter is overheating.
+drop ice block
+:*
+e
+:*
+n
+:*
+w
+:*
+w
+:*
+w
+:*
+get aerial
+:*
+e
+:*
+e
+:*
+e
+:*
+s
+:*
+w
+:*
+drop aerial
+:*
+transmit
+:*
+e
+:*
+n
+:*
+w
+:*
+w
+:*
+n
+:*
+look window
+:*
+e
+:*
+open locked door
+:*
+wear headphones
+:*
+throw grenade
+:*
+n
+:*
+say swarck
+:You have materialised inside your ship which has immediately taken off.
